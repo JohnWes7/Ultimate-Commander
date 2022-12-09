@@ -16,7 +16,7 @@ public class GameRTSController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
@@ -41,14 +41,17 @@ public class GameRTSController : MonoBehaviour
                 if (Physics.Raycast(ray, out raycastHit, 1000, layer))
                 {
                     Vector3 dest = raycastHit.point;
+                    List<Vector3> poss = GetSquareDestPos(dest, selectedUnits.Count, 2);
 
                     //设置所有单位去该去的位置
+                    int i = 0;
                     foreach (var item in selectedUnits)
                     {
                         IMove move;
                         if (item.gameObject.TryGetComponent<IMove>(out move))
                         {
-                            move.Move(dest);
+                            move.Move(poss[i]);
+                            i++;
                         }
                     }
                 }
@@ -56,6 +59,47 @@ public class GameRTSController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 创造一个正方形的位置矩阵
+    /// </summary>
+    /// <param name="dest"></param>
+    /// <param name="number"></param>
+    /// <param name="interval"></param>
+    /// <returns></returns>
+    private List<Vector3> GetSquareDestPos(Vector3 dest, int number, float interval)
+    {
+        int sqrt = Mathf.CeilToInt(Mathf.Sqrt(number));
+        int n = 0;
+        float halfsquare = (sqrt - 1) * interval / 2;
+        Debug.Log(sqrt);
+        Debug.Log(halfsquare);
+        List<Vector3> positions = new List<Vector3>();
+        for (int i = sqrt - 1; i >= 0; i--)
+        {
+            for (int j = sqrt - 1; j >= 0; j--)
+            {
+                Vector3 pos = new Vector3(j * interval - halfsquare + dest.x, dest.y, i * interval - halfsquare + dest.z);
+                Debug.Log(pos);
+                Debug.Log(dest);
+                positions.Add(pos);
+                n++;
+
+                if (n >= number)
+                {
+                    break;
+                }
+            }
+
+            if (n >= number)
+            {
+                break;
+            }
+        }
+
+        return positions;
+    }
+
+    #region 框选方法
     public void SelectUnit()
     {
         // 监测有没有选择框ui
@@ -85,31 +129,10 @@ public class GameRTSController : MonoBehaviour
             (selectRect.transform as RectTransform).sizeDelta = new Vector2(tempx, tempy);
 
             // 碰撞检测选择单位
-            endSelectPos = Camera.main.ScreenToWorldPoint(Input.mousePosition + new Vector3(0, 0, Camera.main.transform.position.y));
-            tempx = Mathf.Abs(startSelectPos.x - endSelectPos.x);
-            float tempz = Mathf.Abs(startSelectPos.z - endSelectPos.z);
+            RaycastHit[] raycastHits = SelectRectCast(startSelectPos, endSelectPos);
 
-            Vector3 startV = startSelectPos - Camera.main.transform.position;
-            Vector3 endV = endSelectPos - Camera.main.transform.position;
-            Vector3 middir = Vector3.Lerp(startV, endV, 0.5f);
-
-            RaycastHit[] raycastHits = Physics.BoxCastAll(Camera.main.transform.position, new Vector3(tempx, 1, tempz), middir, Quaternion.identity, 20);
-
-            foreach (UnitController item in selectedUnits)
-            {
-                item.SetSelectedAni(false);
-            }
-            selectedUnits.Clear();
-
-            foreach (RaycastHit item in raycastHits)
-            {
-                UnitController unitController = null;
-                if (item.collider.gameObject.TryGetComponent<UnitController>(out unitController))
-                {
-                    unitController.SetSelectedAni(true);
-                    selectedUnits.Add(unitController);
-                }
-            }
+            // 用raycast更新unitslist
+            UpdateSelectedUnitsList(raycastHits);
         }
 
         if (Input.GetKeyUp(KeyCode.Mouse0))
@@ -118,35 +141,57 @@ public class GameRTSController : MonoBehaviour
             selectRect.SetActive(false);
 
             // 碰撞检测选择单位
-            endSelectPos = Camera.main.ScreenToWorldPoint(Input.mousePosition + new Vector3(0, 0, Camera.main.transform.position.y));
-            float tempx = Mathf.Abs(startSelectPos.x - endSelectPos.x);
-            float tempz = Mathf.Abs(startSelectPos.z - endSelectPos.z);
+            RaycastHit[] raycastHits = SelectRectCast(startSelectPos, endSelectPos);
 
-            Vector3 startV = startSelectPos - Camera.main.transform.position;
-            Vector3 endV = endSelectPos - Camera.main.transform.position;
-            Vector3 middir = Vector3.Lerp(startV, endV, 0.5f);
-
-            RaycastHit[] raycastHits = Physics.BoxCastAll(Camera.main.transform.position, new Vector3(tempx, 1, tempz), middir, Quaternion.identity, 20);
-
-            foreach (UnitController item in selectedUnits)
-            {
-                item.SetSelectedAni(false);
-            }
-            selectedUnits.Clear();
-
-            selectedUnits.Clear();
-            foreach (RaycastHit item in raycastHits)
-            {
-                UnitController unitController = null;
-                if (item.collider.gameObject.TryGetComponent<UnitController>(out unitController))
-                {
-                    selectedUnits.Add(unitController);
-                    unitController.SetSelectedAni(true);
-                }
-            }
-            
+            // 用raycast更新unitslist
+            UpdateSelectedUnitsList(raycastHits);
         }
     }
+
+    private RaycastHit[] SelectRectCast(Vector3 startSelectPos, Vector3 endSelectPos)
+    {
+        float tempx = Mathf.Abs(startSelectPos.x - endSelectPos.x);
+        float tempz = Mathf.Abs(startSelectPos.z - endSelectPos.z);
+
+        Vector3 startV = startSelectPos - Camera.main.transform.position;
+        Vector3 endV = endSelectPos - Camera.main.transform.position;
+        Vector3 middir = Vector3.Lerp(startV, endV, 0.5f);
+
+        RaycastHit[] raycastHits = Physics.BoxCastAll(Camera.main.transform.position, new Vector3(tempx, 1, tempz), middir, Quaternion.identity, 20);
+
+        return raycastHits;
+    }
+
+    private void UpdateSelectedUnitsList(RaycastHit[] raycastHits)
+    {
+        foreach (UnitController item in selectedUnits)
+        {
+            item.SetSelectedAni(false);
+        }
+        selectedUnits.Clear();
+
+        foreach (RaycastHit item in raycastHits)
+        {
+            // 二次判断是否在框选框中被选中
+            Vector3 spos = Camera.main.WorldToScreenPoint(item.transform.position);
+            if ((spos.x < startMousePos.x && spos.x < Input.mousePosition.x) || (spos.x > startMousePos.x && spos.x > Input.mousePosition.x))
+            {
+                continue;
+            }
+            if ((spos.y < startMousePos.y && spos.y < Input.mousePosition.y) || (spos.y > startMousePos.y && spos.y > Input.mousePosition.y))
+            {
+                continue;
+            }
+
+            UnitController unitController = null;
+            if (item.collider.gameObject.TryGetComponent<UnitController>(out unitController))
+            {
+                unitController.SetSelectedAni(true);
+                selectedUnits.Add(unitController);
+            }
+        }
+    }
+    #endregion
 
     public void debugselectline()
     {

@@ -22,7 +22,7 @@ public class UnitController : MonoBehaviour
     // Update is called once per frame
     protected virtual void Update()
     {
-        Debug.Log("father");
+
     }
 
     public void SetColor(Color color)
