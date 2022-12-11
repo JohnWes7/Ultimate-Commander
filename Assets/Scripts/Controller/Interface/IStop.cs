@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface IMove : IStop
+public interface IStop
 {
-    public void SetMoveDest(Vector3 dest);
+    public void Stop();
 }

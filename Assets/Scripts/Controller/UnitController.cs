@@ -4,42 +4,44 @@ using UnityEngine;
 
 public class UnitController : MonoBehaviour
 {
-    private int party;
-    [SerializeField]
-    Color teamColor;
+    [SerializeField] private int team;
+    [SerializeField] private string player;
+    [SerializeField] private string unitName;
+    [SerializeField] Color teamColor;
+    [SerializeField] private int hp;
+    [SerializeField] private int maxHP;
 
     protected virtual void Awake()
     {
         SetColor(teamColor);
     }
 
-    // Start is called before the first frame update
-    protected virtual void Start()
+    public void Init(int team, string player, string unitName, Color teamcolor, int hp)
     {
-
-    }
-
-    // Update is called once per frame
-    protected virtual void Update()
-    {
-
+        this.team = team;
+        this.player = player;
+        this.unitName = unitName;
+        this.teamColor = teamcolor;
+        this.hp = hp;
     }
 
     public void SetColor(Color color)
     {
-        MeshRenderer mr = gameObject.GetComponent<MeshRenderer>();
-        Material temp = mr.material;
-        temp.color = color;
-
+        MeshRenderer[] mrs = gameObject.GetComponentsInChildren<MeshRenderer>();
+        foreach (var mr in mrs)
+        {
+            Material temp = mr.material;
+            temp.color = color;
+        }
     }
 
     /// <summary>
     /// 设置阵营
     /// </summary>
     /// <param name="party"></param>
-    public void SetParty(int party)
+    public void SetTeam(int team)
     {
-        this.party = party;
+        this.team = team;
     }
 
     /// <summary>
@@ -56,5 +58,25 @@ public class UnitController : MonoBehaviour
         {
             SetColor(teamColor);
         }
+    }
+
+    public int GetTeam()
+    {
+        return team;
+    }
+
+    public string GetPlayer()
+    {
+        return player;
+    }
+
+    public int GetHP()
+    {
+        return hp;
+    }
+
+    public void SetHP(int hp)
+    {
+        this.hp = Mathf.Clamp(hp, 0, maxHP);
     }
 }

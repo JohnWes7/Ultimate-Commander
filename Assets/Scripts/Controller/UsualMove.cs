@@ -27,7 +27,7 @@ public class UsualMove : MonoBehaviour, IMove
         {
             if (moveVelocity != null)
             {
-                moveVelocity.SetVelocity(Vector3.zero);
+                moveVelocity.Stop();
             }
             ismoving = false;
             return;
@@ -39,5 +39,11 @@ public class UsualMove : MonoBehaviour, IMove
             Vector3 direction = (dest - transform.position).normalized;
             moveVelocity.SetVelocity(direction);
         }
+    }
+
+    public void Stop()
+    {
+        dest = transform.position;
+        ismoving = false;
     }
 }

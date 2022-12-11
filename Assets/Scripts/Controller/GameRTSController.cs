@@ -7,28 +7,30 @@ using UnityEngine;
 /// </summary>
 public class GameRTSController : MonoBehaviour
 {
-    [SerializeField]
-    private Vector3 startMousePos;
-    [SerializeField]
-    private Vector3 endMousePos;
-    [SerializeField]
-    private List<UnitController> selectedUnits = new List<UnitController>();
+    [SerializeField] private Vector3 startMousePos;
+    [SerializeField] private Vector3 endMousePos;
+    [SerializeField] private List<UnitController> selectedUnits = new List<UnitController>();
     private GameObject selectRect;
+    [SerializeField] private int team;
+    [SerializeField] private string player;
 
     // Start is called before the first frame update
     void Start()
     {
-
+        Init(0, "j");
     }
 
     // Update is called once per frame
     void Update()
     {
         SelectUnit();
-        MoveUnit();
+        RightClick();
     }
 
-    private void MoveUnit()
+    /// <summary>
+    /// 右键指令
+    /// </summary>
+    private void RightClick()
     {
         if (Input.GetKeyDown(KeyCode.Mouse1))
         {
@@ -38,17 +40,52 @@ public class GameRTSController : MonoBehaviour
                 Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
                 // 射线只监测ground层
                 int layer = 1 << LayerMask.NameToLayer("Ground");
-                RaycastHit raycastHit;
+                RaycastHit groundRaycastHit;
 
-                if (Physics.Raycast(ray, out raycastHit, 1000, layer))
+                // 射线监测两次来判断是想要攻击单位或者是要移动
+                // 如果是点到单位就攻击
+                RaycastHit unitRaycasthit;
+                if (Physics.Raycast(ray, out unitRaycasthit, 1000, 1 << LayerMask.NameToLayer("Unit")))
                 {
-                    Vector3 dest = raycastHit.point;
+                    UnitController unitController;
+                    if (unitRaycasthit.transform.TryGetComponent<UnitController>(out unitController))
+                    {
+                        //设置所有单位目标
+                        foreach (var item in selectedUnits)
+                        {
+                            // 终止所有现在移动和攻击
+                            IStop[] stops = item.GetComponents<IStop>();
+                            foreach (var istop in stops)
+                            {
+                                istop.Stop();
+                            }
+
+                            ITryAttack attack;
+                            if (item.gameObject.TryGetComponent<ITryAttack>(out attack))
+                            {
+                                attack.SetTarget(unitController);
+                            }
+                        }
+                    }
+                    
+                }
+                // 如果是要点地板
+                else if (Physics.Raycast(ray, out groundRaycastHit, 1000, layer))
+                {
+                    Vector3 dest = groundRaycastHit.point;
                     List<Vector3> poss = GetSquareDestPos(dest, selectedUnits.Count, 2);
 
                     //设置所有单位去该去的位置
                     int i = 0;
                     foreach (var item in selectedUnits)
                     {
+                        // 终止所有现在移动和攻击
+                        IStop[] stops = item.GetComponents<IStop>();
+                        foreach (var istop in stops)
+                        {
+                            istop.Stop();
+                        }
+
                         IMove move;
                         if (item.gameObject.TryGetComponent<IMove>(out move))
                         {
@@ -191,8 +228,12 @@ public class GameRTSController : MonoBehaviour
             UnitController unitController = null;
             if (item.collider.gameObject.TryGetComponent<UnitController>(out unitController))
             {
-                unitController.SetSelectedAni(true);
-                selectedUnits.Add(unitController);
+                // 只能选择自己的单位
+                if (unitController.GetPlayer() == player)
+                {
+                    unitController.SetSelectedAni(true);
+                    selectedUnits.Add(unitController);
+                }
             }
         }
     }
@@ -201,5 +242,11 @@ public class GameRTSController : MonoBehaviour
     public void debugselectline()
     {
         Debug.DrawLine(Camera.main.transform.position, Camera.main.ScreenToWorldPoint(Input.mousePosition + new Vector3(0, 0, 100)), Color.red);
+    }
+
+    public void Init(int team, string player)
+    {
+        this.team = team;
+        this.player = player;
     }
 }

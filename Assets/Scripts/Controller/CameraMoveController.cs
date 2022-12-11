@@ -42,12 +42,15 @@ public class CameraMoveController : MonoBehaviour
         }
         if (Input.GetKey(KeyCode.Mouse2))
         {
-            Vector3 endmousePos = Input.mousePosition;
-            Vector3 deltaVect = endmousePos - startMousePos;
-            startMousePos = endmousePos;
+            float mouseX = Input.GetAxis("Mouse X");
+            float mouseY = Input.GetAxis("Mouse Y");
+            //Debug.Log(mouseX + " " + mouseY);
 
-            dest = dest + new Vector3(deltaVect.x, 0, deltaVect.y) * Config.CameraMoveSpeed * Mathf.Abs(Camera.main.transform.position.y);
-            transform.DOMove(dest, 0.8f).SetEase(Ease.OutExpo);
+            if (mouseX != 0 || mouseY != 0)
+            {
+                dest = dest + new Vector3(-mouseX, 0, -mouseY) * Config.CameraMoveSpeed * Mathf.Abs(Camera.main.transform.position.y) * 0.01f;
+                transform.DOMove(dest, 0.3f).SetEase(Ease.OutExpo);
+            }
         }
     }
 
