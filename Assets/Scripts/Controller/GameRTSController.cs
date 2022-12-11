@@ -2,13 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// 负责选取物体移动
+/// </summary>
 public class GameRTSController : MonoBehaviour
 {
     [SerializeField]
-    private Vector3 startSelectPos;
     private Vector3 startMousePos;
     [SerializeField]
-    private Vector3 endSelectPos;
+    private Vector3 endMousePos;
     [SerializeField]
     private List<UnitController> selectedUnits = new List<UnitController>();
     private GameObject selectRect;
@@ -50,7 +52,7 @@ public class GameRTSController : MonoBehaviour
                         IMove move;
                         if (item.gameObject.TryGetComponent<IMove>(out move))
                         {
-                            move.Move(poss[i]);
+                            move.SetMoveDest(poss[i]);
                             i++;
                         }
                     }
@@ -71,16 +73,16 @@ public class GameRTSController : MonoBehaviour
         int sqrt = Mathf.CeilToInt(Mathf.Sqrt(number));
         int n = 0;
         float halfsquare = (sqrt - 1) * interval / 2;
-        Debug.Log(sqrt);
-        Debug.Log(halfsquare);
+        //Debug.Log(sqrt);
+        //Debug.Log(halfsquare);
         List<Vector3> positions = new List<Vector3>();
         for (int i = sqrt - 1; i >= 0; i--)
         {
             for (int j = sqrt - 1; j >= 0; j--)
             {
                 Vector3 pos = new Vector3(j * interval - halfsquare + dest.x, dest.y, i * interval - halfsquare + dest.z);
-                Debug.Log(pos);
-                Debug.Log(dest);
+                //Debug.Log(pos);
+                //Debug.Log(dest);
                 positions.Add(pos);
                 n++;
 
@@ -115,13 +117,11 @@ public class GameRTSController : MonoBehaviour
             // 打开选择框ui 记录一开始鼠标位置和指向的向量
             selectRect.SetActive(true);
             startMousePos = Input.mousePosition;
-            startSelectPos = Camera.main.ScreenToWorldPoint(Input.mousePosition + new Vector3(0, 0, Camera.main.transform.position.y));
         }
 
         if (Input.GetKey(KeyCode.Mouse0))
         {
             // 更改选择框的位置大小
-            endSelectPos = Camera.main.ScreenToWorldPoint(Input.mousePosition + new Vector3(0, 0, Camera.main.transform.position.y));
             float tempx = Mathf.Abs(startMousePos.x - Input.mousePosition.x);
             float tempy = Mathf.Abs(startMousePos.y - Input.mousePosition.y);
 
@@ -129,7 +129,8 @@ public class GameRTSController : MonoBehaviour
             (selectRect.transform as RectTransform).sizeDelta = new Vector2(tempx, tempy);
 
             // 碰撞检测选择单位
-            RaycastHit[] raycastHits = SelectRectCast(startSelectPos, endSelectPos);
+            endMousePos = Input.mousePosition;
+            RaycastHit[] raycastHits = SelectRectCast(startMousePos, Input.mousePosition);
 
             // 用raycast更新unitslist
             UpdateSelectedUnitsList(raycastHits);
@@ -141,15 +142,19 @@ public class GameRTSController : MonoBehaviour
             selectRect.SetActive(false);
 
             // 碰撞检测选择单位
-            RaycastHit[] raycastHits = SelectRectCast(startSelectPos, endSelectPos);
+            endMousePos = Input.mousePosition;
+            RaycastHit[] raycastHits = SelectRectCast(startMousePos, Input.mousePosition);
 
             // 用raycast更新unitslist
             UpdateSelectedUnitsList(raycastHits);
         }
     }
 
-    private RaycastHit[] SelectRectCast(Vector3 startSelectPos, Vector3 endSelectPos)
+    private RaycastHit[] SelectRectCast(Vector3 startMousePos, Vector3 endMousePos)
     {
+        Vector3 startSelectPos = Camera.main.ScreenToWorldPoint(startMousePos + Camera.main.transform.position.y * Vector3.forward);
+        Vector3 endSelectPos = Camera.main.ScreenToWorldPoint(endMousePos + Camera.main.transform.position.y * Vector3.forward);
+        
         float tempx = Mathf.Abs(startSelectPos.x - endSelectPos.x);
         float tempz = Mathf.Abs(startSelectPos.z - endSelectPos.z);
 
@@ -157,7 +162,7 @@ public class GameRTSController : MonoBehaviour
         Vector3 endV = endSelectPos - Camera.main.transform.position;
         Vector3 middir = Vector3.Lerp(startV, endV, 0.5f);
 
-        RaycastHit[] raycastHits = Physics.BoxCastAll(Camera.main.transform.position, new Vector3(tempx, 1, tempz), middir, Quaternion.identity, 20);
+        RaycastHit[] raycastHits = Physics.BoxCastAll(Camera.main.transform.position, new Vector3(tempx, 1, tempz), middir, Quaternion.identity, middir.magnitude + 10);
 
         return raycastHits;
     }

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface IMove
+public interface IMoveVelocity
 {
-    public void SetMoveDest(Vector3 dest);
+    public void SetVelocity(Vector3 velocity);
 }

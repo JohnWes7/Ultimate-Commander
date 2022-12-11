@@ -2,17 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Config : MonoBehaviour
+public static class Config
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public static float CameraZoomSpeed = 10f;
+    public static float CameraMoveSpeed = 1f;
 
-    // Update is called once per frame
-    void Update()
+    static Config()
     {
-        
+
     }
 }
