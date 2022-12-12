@@ -4,9 +4,8 @@ using UnityEngine;
 
 public class UsualVelocity : MonoBehaviour, IMoveVelocity
 {
-    [SerializeField] private Vector3 velocity;
+    [SerializeField] private OptionalValue<Vector3> velocity;
     [SerializeField] private float speed = 3f;
-    [SerializeField] private bool ismoving;
 
     /// <summary>
     /// 设置移动方向
@@ -14,23 +13,22 @@ public class UsualVelocity : MonoBehaviour, IMoveVelocity
     /// <param name="velocity"></param>
     public void SetVelocity(Vector3 velocity)
     {
-        this.velocity = velocity;
-        ismoving = true;
+        this.velocity.value = velocity;
+        this.velocity.enabled = true;
     }
 
     public void Stop()
     {
-        velocity = Vector3.zero;
-        ismoving = false;
+        velocity.enabled = false;
     }
 
     // Update is called once per frame
     void Update()
     {
         // 移动
-        if (ismoving)
+        if (velocity.enabled)
         {
-            transform.position += velocity * speed * Time.deltaTime;
+            transform.position += velocity.value * speed * Time.deltaTime;
         }
     }
 }

@@ -4,9 +4,14 @@ using UnityEngine;
 
 public class UsualAttack : MonoBehaviour, ITryAttack
 {
-    [SerializeField] private UnitController target;
+    [SerializeField] private OptionalValue<UnitController> target;
     // 表面射程范围 超过这个范围就会移动
     [SerializeField] private float range;
+
+    public OptionalValue<UnitController> GetTarget()
+    {
+        return target;
+    }
 
     /// <summary>
     /// 设置要攻击的目标
@@ -16,14 +21,14 @@ public class UsualAttack : MonoBehaviour, ITryAttack
     {
         if (target == null)
         {
-            this.target = target;
+            this.target.enabled = false;
             return;
         }
 
         // 不能是友军
         if (target.GetTeam() == GetComponent<UnitController>().GetTeam())
         {
-            target = null;
+            this.target.enabled = false;
             return;
         }
 
@@ -31,33 +36,33 @@ public class UsualAttack : MonoBehaviour, ITryAttack
         IBeDamage beDamage;
         if (!target.TryGetComponent<IBeDamage>(out beDamage))
         {
-            target = null;
+            this.target.enabled = false;
             return;
         }
 
-        this.target = target;
+        this.target.value = target;
+        this.target.enabled = true;
     }
 
     public void Stop()
     {
-        SetTarget(null);
+        target.enabled = false;
     }
 
     private void Update()
     {
         // 如果有下达指令的目标 监测是否在攻击距离里面
-        if (target != null)
+        if (target.enabled)
         {
             // 超出范围移动
-            if ((target.transform.position - transform.position).magnitude > range)
+            if ((target.value.transform.position - transform.position).magnitude > range)
             {
                 IMove move;
                 if (TryGetComponent<IMove>(out move))
                 {
-                    move.SetMoveDest(target.transform.position + ((transform.position - target.transform.position).normalized * range * 0.8f));
+                    move.SetMoveDest(target.value.transform.position + ((transform.position - target.value.transform.position).normalized * range * 0.8f));
                 }
             }
-            
         }
     }
 }
