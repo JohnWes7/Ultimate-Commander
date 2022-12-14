@@ -27,7 +27,7 @@ public class TurretAutoAttack : MonoBehaviour, IAutoAttack
     [SerializeField] private OptionalValue<UnitController> secondTarget;
     [SerializeField] private OptionalValue<UnitController> attackTarget;
 
-    [SerializeField] private float turretRange;
+    [SerializeField] private float turretRange; //炮塔射程
     [SerializeField] private float turretcd;
     [SerializeField] private UnitController m_UnitController;
     [SerializeField] private ITryAttack m_tryAttack;
@@ -40,15 +40,44 @@ public class TurretAutoAttack : MonoBehaviour, IAutoAttack
 
     private void Update()
     {
+        // 超出射程就取消攻击目标 attacktarget
         ResetAttackTargetIfOutOfRange();
 
+        // 扫描目标
+        ScanTarget();
+
+        // 转动攻击
+        RotateTurretAndFire();
+        
+    }
+
+    private void RotateTurretAndFire()
+    {
+        if (attackTarget.enabled)
+        {
+            // 进行攻击 转动炮塔
+            Vector3 dir = attackTarget.value.transform.position - transform.position;
+            Quaternion dirQua = Quaternion.LookRotation(dir, Vector3.up);
+            transform.DOKill();
+            transform.DORotateQuaternion(dirQua, 0.3f).SetEase(Ease.Linear);
+        }
+        else
+        {
+            // 复位
+            transform.DOKill();
+            transform.DOLocalRotateQuaternion(Quaternion.identity, 0.2f).SetEase(Ease.Linear);
+        }
+    }
+
+    private void ScanTarget()
+    {
         // 寻找周围目标
         Collider[] allunits = Physics.OverlapSphere(transform.position, turretRange, 1 << LayerMask.NameToLayer("Unit"));
         //Debug.Log(allunits.Length);
         //Debug.Log(allunits);
 
-        // 先找首要指令的目标在不在 如果有第一目标 而且当前目标不存在 或者不是首要目标就要进行监测
-        if (firstTarget.enabled && attackTarget.value != firstTarget.value)
+        // 先找首要指令的目标在不在: 如果有第一目标 而且当前目标不存在 或者不是首要目标就要进行监测
+        if (firstTarget.enabled && (attackTarget.enabled != true || attackTarget.value != firstTarget.value))
         {
             foreach (var item in allunits)
             {
@@ -84,20 +113,6 @@ public class TurretAutoAttack : MonoBehaviour, IAutoAttack
                 }
             }
         }
-
-        if (attackTarget.enabled)
-        {
-            // 进行攻击
-            Vector3 dir = attackTarget.value.transform.position - transform.position;
-            Quaternion dirQua = Quaternion.LookRotation(dir, Vector3.up);
-            transform.DORotateQuaternion(dirQua, 0.8f).SetEase(Ease.Linear);
-        }
-        else
-        {
-            // 复位
-            transform.DORotateQuaternion(Quaternion.identity, 0.8f).SetEase(Ease.Linear);
-        }
-
     }
 
     private void ResetAttackTargetIfOutOfRange()

@@ -286,6 +286,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d00fe4b12bef74c4d80e3f4d3f0fa8e5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  unit:
+    value: {fileID: 0}
+    enabled: 0
 --- !u!1 &157305143
 GameObject:
   m_ObjectHideFlags: 0
@@ -448,6 +451,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d00fe4b12bef74c4d80e3f4d3f0fa8e5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  unit:
+    value: {fileID: 0}
+    enabled: 0
 --- !u!1 &265376043
 GameObject:
   m_ObjectHideFlags: 0
@@ -607,9 +613,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 265376043}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d00fe4b12bef74c4d80e3f4d3f0fa8e5, type: 3}
+  m_Script: {fileID: 11500000, guid: e53c075911d1b8144858697cc2d698c3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  totaldamage: 0
 --- !u!1 &330585543
 GameObject:
   m_ObjectHideFlags: 0
@@ -689,7 +696,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 330585543}
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 10, z: 0}
+  m_LocalPosition: {x: 0, y: 25, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1176,7 +1183,7 @@ MonoBehaviour:
   attackTarget:
     value: {fileID: 0}
     enabled: 0
-  turretRange: 3.5
+  turretRange: 7
   turretcd: 0
   m_UnitController: {fileID: 0}
 --- !u!1 &2021119731
@@ -1318,6 +1325,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 919132147782407751, guid: 7655c06ea4a10644fab31fa7f5b9fea2,
+        type: 3}
+      propertyPath: range
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 5825084088184305464, guid: 7655c06ea4a10644fab31fa7f5b9fea2,
         type: 3}
       propertyPath: m_RootOrder

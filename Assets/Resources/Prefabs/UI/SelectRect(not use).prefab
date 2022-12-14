@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4948254891057006254}
   m_Layer: 5
-  m_Name: SelectRect
+  m_Name: SelectRect(not use)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

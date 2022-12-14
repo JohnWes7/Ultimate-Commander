@@ -4,12 +4,25 @@ using UnityEngine;
 
 public class UsualBeDamage : MonoBehaviour, IBeDamage
 {
+    [SerializeField] private OptionalValue<UnitController> unit;
+
+    private void Awake()
+    {
+        Init();
+    }
+
     public void BeDamage(int damage)
     {
-        UnitController unit;
-        if (TryGetComponent<UnitController>(out unit))
-        {
-            unit.SetHP(unit.GetHP() - damage);
-        }
+        unit.value.SetHP(unit.value.GetHP() - damage);
+    }
+
+    public void Die()
+    {
+        Destroy(gameObject);
+    }
+
+    public void Init()
+    {
+        unit.value = GetComponent<UnitController>();
     }
 }

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class UsualAttack : MonoBehaviour, ITryAttack
+public class UsualTryAttack : MonoBehaviour, ITryAttack
 {
     [SerializeField] private OptionalValue<UnitController> target;
     // 表面射程范围 超过这个范围就会移动

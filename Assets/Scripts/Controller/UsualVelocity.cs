@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 public class UsualVelocity : MonoBehaviour, IMoveVelocity
 {
@@ -15,6 +16,9 @@ public class UsualVelocity : MonoBehaviour, IMoveVelocity
     {
         this.velocity.value = velocity;
         this.velocity.enabled = true;
+
+        transform.DOKill();
+        transform.DORotateQuaternion(Quaternion.LookRotation(velocity, Vector3.up), 0.3f);
     }
 
     public void Stop()
