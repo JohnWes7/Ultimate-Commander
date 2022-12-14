@@ -27,31 +27,54 @@ public class TurretAutoAttack : MonoBehaviour, IAutoAttack
     [SerializeField] private OptionalValue<UnitController> secondTarget;
     [SerializeField] private OptionalValue<UnitController> attackTarget;
 
-    [SerializeField] private float turretRange; //炮塔射程
-    [SerializeField] private float turretcd;
-    [SerializeField] private UnitController m_UnitController;
-    [SerializeField] private ITryAttack m_tryAttack;
+    [SerializeField] private float turretRange; // 炮塔射程
+    [SerializeField] private float turretcd;    // 炮塔射速
+    [SerializeField] private int bulletDamage;  // 子弹伤害
+    [SerializeField] private float speed;   // 子弹速度
+    // 留白 炮塔类型 比如只能对地只能对空只能对什么
+    [SerializeField] private UnitController m_UnitController;   //本身的controller
+    [SerializeField] private ITryAttack m_tryAttack;    // 获取当前首要目标
+    [SerializeField] private OptionalValue<IFire> m_fire;   // 开火函数
+    [SerializeField] private float timer;
 
     private void Awake()
     {
-        m_UnitController = GetComponentInParent<UnitController>();
-        m_tryAttack = GetComponentInParent<ITryAttack>();
+        Init();
     }
 
     private void Update()
     {
         // 超出射程就取消攻击目标 attacktarget
-        ResetAttackTargetIfOutOfRange();
+        ResetAttackTargetIfOutOfRangeAndDie();
 
         // 扫描目标
         ScanTarget();
 
-        // 转动攻击
-        RotateTurretAndFire();
-        
+        // 转动炮塔
+        RotateTurret();
+
+        // 开火
+        TryFire();
     }
 
-    private void RotateTurretAndFire()
+    public void Init()
+    {
+        m_UnitController = GetComponentInParent<UnitController>();
+        m_tryAttack = GetComponentInParent<ITryAttack>();
+
+        IFire fire;
+        if (TryGetComponent<IFire>(out fire))
+        {
+            m_fire.value = fire;
+            m_fire.enabled = true;
+        }
+        else
+        {
+            m_fire.enabled = false;
+        }
+    }
+
+    private void RotateTurret()
     {
         if (attackTarget.enabled)
         {
@@ -59,7 +82,7 @@ public class TurretAutoAttack : MonoBehaviour, IAutoAttack
             Vector3 dir = attackTarget.value.transform.position - transform.position;
             Quaternion dirQua = Quaternion.LookRotation(dir, Vector3.up);
             transform.DOKill();
-            transform.DORotateQuaternion(dirQua, 0.3f).SetEase(Ease.Linear);
+            transform.DORotateQuaternion(dirQua, 0.1f).SetEase(Ease.Linear);
         }
         else
         {
@@ -115,12 +138,25 @@ public class TurretAutoAttack : MonoBehaviour, IAutoAttack
         }
     }
 
-    private void ResetAttackTargetIfOutOfRange()
+    private void TryFire()
+    {
+        // 可能有的一帧攻击好几次
+        timer = timer + Time.deltaTime * turretcd;
+        //Debug.Log(m_fire.enabled.ToString() + " " + attackTarget.enabled.ToString() + " " + (timer >= 1).ToString() + " " + (Vector3.Angle(transform.forward, attackTarget.value.transform.position - transform.position) < 10));
+        if (m_fire.enabled && attackTarget.enabled && timer >= 1 && Vector3.Angle(transform.forward, attackTarget.value.transform.position - transform.position) < 5)
+        {
+            timer -= 1;
+            m_fire.value.Fire(attackTarget.value, m_UnitController, bulletDamage, speed);
+        }
+        timer = Mathf.Clamp01(timer);
+    }
+
+    private void ResetAttackTargetIfOutOfRangeAndDie()
     {
         if (attackTarget.enabled)
         {
             // 如果超过射程就target失效
-            if ((attackTarget.value.transform.position - transform.position).magnitude > turretRange)
+            if (attackTarget.value == null || (attackTarget.value.transform.position - transform.position).magnitude > turretRange)
             {
                 //Debug.Log((attackTarget.value.transform.position - transform.position).magnitude);
                 attackTarget.enabled = false;
@@ -128,6 +164,10 @@ public class TurretAutoAttack : MonoBehaviour, IAutoAttack
         }
     }
 
+    /// <summary>
+    /// 弃用
+    /// </summary>
+    /// <param name="unit"></param>
     public void SetFirstTarget(UnitController unit)
     {
         //if (unit == null)
@@ -139,11 +179,6 @@ public class TurretAutoAttack : MonoBehaviour, IAutoAttack
 
         //firstTarget.value = unit;
         //firstTarget.enabled = true;
-    }
-
-    public void Stop()
-    {
-        //firstTarget.enabled = false;
     }
 
 }

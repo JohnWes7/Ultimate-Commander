@@ -11,11 +11,6 @@ public class TestUnitBeDamage_Inf_Hp : MonoBehaviour, IBeDamage
         Init();
     }
 
-    public void BeDamage(int damage)
-    {
-        Debug.Log("被攻击了: " + damage.ToString() + " damage, 总收到伤害: " + totaldamage);
-    }
-
     public void Die()
     {
         Debug.Log("heros never die!");
@@ -24,5 +19,11 @@ public class TestUnitBeDamage_Inf_Hp : MonoBehaviour, IBeDamage
     public void Init()
     {
         totaldamage = 0;
+    }
+
+    public void BeDamage(int damage, IBullet frombullet, UnitController fromunit)
+    {
+        totaldamage += damage;
+        Debug.Log("被攻击了: " + damage.ToString() + " damage, 总收到伤害: " + totaldamage);
     }
 }

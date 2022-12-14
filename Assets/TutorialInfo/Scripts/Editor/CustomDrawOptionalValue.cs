@@ -11,13 +11,21 @@ namespace myEditor
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
             //base.OnGUI(position, property, label);
-            var valueProperty = property.FindPropertyRelative("value");
             var enabledProperty = property.FindPropertyRelative("enabled");
 
-            position.width -= 24;
-            EditorGUI.BeginDisabledGroup(!enabledProperty.boolValue);
-            EditorGUI.PropertyField(position, valueProperty, label, true);
-            EditorGUI.EndDisabledGroup();
+            try
+            {
+                var valueProperty = property.FindPropertyRelative("value");
+                position.width -= 24;
+                EditorGUI.BeginDisabledGroup(!enabledProperty.boolValue);
+                EditorGUI.PropertyField(position, valueProperty, label, true);
+                EditorGUI.EndDisabledGroup();
+            }
+            catch (System.Exception)
+            {
+
+            }
+            
 
             position.x += position.width + 24;
             position.width = position.height = EditorGUI.GetPropertyHeight(enabledProperty);

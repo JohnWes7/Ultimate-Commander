@@ -51,6 +51,11 @@ public class UsualTryAttack : MonoBehaviour, ITryAttack
 
     private void Update()
     {
+        if (target.value == null)
+        {
+            target.enabled = false;
+        }
+
         // 如果有下达指令的目标 监测是否在攻击距离里面
         if (target.enabled)
         {

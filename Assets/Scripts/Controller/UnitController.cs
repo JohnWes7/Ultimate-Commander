@@ -13,7 +13,7 @@ public class UnitController : MonoBehaviour
 
     protected virtual void Awake()
     {
-        SetColor(teamColor);
+        SetColor(teamColor, "colour");
     }
 
     public void Init(int team, string player, string unitName, Color teamcolor, int hp)
@@ -25,13 +25,39 @@ public class UnitController : MonoBehaviour
         this.hp = hp;
     }
 
-    public void SetColor(Color color)
+    public void SetColor(Color color, string name)
     {
-        MeshRenderer[] mrs = gameObject.GetComponentsInChildren<MeshRenderer>();
-        foreach (var mr in mrs)
+        List<Transform> colours = transform.FindAllChildren(name);
+        foreach (Transform item in colours)
         {
-            Material temp = mr.material;
-            temp.color = color;
+            //Debug.Log(item.name);
+            MeshRenderer mr;
+            if (item.TryGetComponent<MeshRenderer>(out mr))
+            {
+                Material temp = mr.material;
+                temp.color = color;
+            }
+        }
+        //MeshRenderer[] mrs = gameObject.GetComponentsInChildren<MeshRenderer>();
+        //foreach (var mr in mrs)
+        //{
+        //    Material temp = mr.material;
+        //    temp.color = color;
+        //}
+    }
+
+    public void SetColor(Color color, Material material, string name)
+    {
+        List<Transform> colours = transform.FindAllChildren(name);
+        material.color = color;
+        foreach (Transform item in colours)
+        {
+            //Debug.Log(item.name);
+            MeshRenderer mr;
+            if (item.TryGetComponent<MeshRenderer>(out mr))
+            {
+                mr.material = material;
+            }
         }
     }
 
@@ -52,11 +78,11 @@ public class UnitController : MonoBehaviour
     {
         if (value)
         {
-            SetColor(Color.green);
+            SetColor(Color.green, "colour");
         }
         else
         {
-            SetColor(teamColor);
+            SetColor(teamColor, "colour");
         }
     }
 

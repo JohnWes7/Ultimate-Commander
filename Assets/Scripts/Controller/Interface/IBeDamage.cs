@@ -4,7 +4,7 @@ using UnityEngine;
 
 public interface IBeDamage
 {
-    public void BeDamage(int damage);
+    public void BeDamage(int damage, IBullet frombullet, UnitController fromunit);
 
     public void Die();
 }

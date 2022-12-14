@@ -4,5 +4,5 @@ using UnityEngine;
 
 public interface IFire
 {
-    public void Fire();
+    public void Fire(UnitController unit, UnitController from, int damage, float speed);
 }

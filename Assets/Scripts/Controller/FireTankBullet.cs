@@ -4,20 +4,30 @@ using UnityEngine;
 
 public class FireTankBullet : MonoBehaviour, IFire
 {
-    private Vector3 FirePos;
+    [SerializeField] private OptionalValue<Transform> FirePos;
 
     private void Start()
     {
-        Transform pos = transform.Find("BulletPos");
+        Transform pos = transform.Find("BulletFirePos");
         if (pos != null)
         {
-            FirePos = pos.position - transform.position;
+            FirePos.value = pos;
+            FirePos.enabled = true;
         }
     }
 
 
-    public void Fire()
+    public void Fire(UnitController target, UnitController firefrom, int damage, float speed)
     {
-        Instantiate<GameObject>(BulletData.Instance.TankBulletPrefab, transform.position + FirePos, Quaternion.identity);
+        Vector3 instPos = transform.position;
+        Quaternion instQua = transform.rotation;
+        if (FirePos.enabled)
+        {
+            instPos = FirePos.value.position;
+            instQua = FirePos.value.rotation;
+        }
+
+        IBullet temp = Instantiate<GameObject>(BulletData.Instance.TankBulletPrefab, FirePos.value.position, FirePos.value.rotation).GetComponent<IBullet>();
+        temp.SetTarget(target, firefrom, damage, speed);
     }
 }

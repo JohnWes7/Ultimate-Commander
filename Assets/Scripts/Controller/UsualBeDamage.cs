@@ -11,18 +11,23 @@ public class UsualBeDamage : MonoBehaviour, IBeDamage
         Init();
     }
 
-    public void BeDamage(int damage)
-    {
-        unit.value.SetHP(unit.value.GetHP() - damage);
-    }
-
     public void Die()
     {
+        gameObject.SetActive(false);
         Destroy(gameObject);
     }
 
     public void Init()
     {
         unit.value = GetComponent<UnitController>();
+    }
+
+    public void BeDamage(int damage, IBullet frombullet, UnitController fromunit)
+    {
+        unit.value.SetHP(unit.value.GetHP() - damage);
+        if (unit.value.GetHP() <= 0)
+        {
+            Die();
+        }
     }
 }
