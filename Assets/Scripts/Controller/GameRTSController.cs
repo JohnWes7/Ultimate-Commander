@@ -13,6 +13,7 @@ public class GameRTSController : MonoBehaviour
     private GameObject selectRect;
     [SerializeField] private int team;
     [SerializeField] private string player;
+    [SerializeField] private float clicktimer;
 
     // Start is called before the first frame update
     void Start()
@@ -154,6 +155,8 @@ public class GameRTSController : MonoBehaviour
             // 打开选择框ui 记录一开始鼠标位置和指向的向量
             selectRect.SetActive(true);
             startMousePos = Input.mousePosition;
+
+            clicktimer = Time.deltaTime;
         }
 
         if (Input.GetKey(KeyCode.Mouse0))
@@ -171,6 +174,8 @@ public class GameRTSController : MonoBehaviour
 
             // 用raycast更新unitslist
             UpdateSelectedUnitsList(raycastHits);
+
+            clicktimer += Time.deltaTime;
         }
 
         if (Input.GetKeyUp(KeyCode.Mouse0))
@@ -184,6 +189,33 @@ public class GameRTSController : MonoBehaviour
 
             // 用raycast更新unitslist
             UpdateSelectedUnitsList(raycastHits);
+
+            // 点击
+            clicktimer += Time.deltaTime;
+            if (clicktimer < 1f && (startMousePos - Input.mousePosition).magnitude < 3)
+            {
+                foreach (var item in selectedUnits)
+                {
+                    item.SetSelectedAni(false);
+                }
+                selectedUnits.Clear();
+
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                RaycastHit raycastHit;
+                if (Physics.Raycast(ray, out raycastHit, 1000, 1 << LayerMask.NameToLayer("Unit")))
+                {
+                    Debug.Log(raycastHit.transform.name);
+                    UnitController unitController;
+                    if (raycastHit.transform.TryGetComponent<UnitController>(out unitController))
+                    {
+                        if (unitController.GetPlayer() == this.player)
+                        {
+                            unitController.SetSelectedAni(true);
+                            selectedUnits.Add(unitController);
+                        }
+                    }
+                }
+            }
         }
     }
 
