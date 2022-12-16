@@ -33,7 +33,7 @@ public class TurretAutoAttack : MonoBehaviour, IAutoAttack
     [SerializeField] private float speed;   // 子弹速度
     // 留白 炮塔类型 比如只能对地只能对空只能对什么
     [SerializeField] private UnitController m_UnitController;   //本身的controller
-    [SerializeField] private ITryAttack m_tryAttack;    // 获取当前首要目标
+    [SerializeField] private ISetTarget m_tryAttack;    // 获取当前首要目标
     [SerializeField] private OptionalValue<IFire> m_fire;   // 开火函数
     [SerializeField] private float timer;
 
@@ -60,7 +60,7 @@ public class TurretAutoAttack : MonoBehaviour, IAutoAttack
     public void Init()
     {
         m_UnitController = GetComponentInParent<UnitController>();
-        m_tryAttack = GetComponentInParent<ITryAttack>();
+        m_tryAttack = GetComponentInParent<ISetTarget>();
 
         IFire fire;
         if (TryGetComponent<IFire>(out fire))

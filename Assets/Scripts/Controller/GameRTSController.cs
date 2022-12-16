@@ -61,8 +61,8 @@ public class GameRTSController : MonoBehaviour
                                 istop.Stop();
                             }
 
-                            ITryAttack attack;
-                            if (item.gameObject.TryGetComponent<ITryAttack>(out attack))
+                            ISetTarget attack;
+                            if (item.gameObject.TryGetComponent<ISetTarget>(out attack))
                             {
                                 attack.SetTarget(unitController);
                             }

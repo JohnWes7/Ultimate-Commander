@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8499992801771507769}
   - component: {fileID: 8787166097312598019}
   - component: {fileID: 1086111045072221850}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: colour
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -61,7 +61,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: afbcb98dbe882904db32fa3198963e86, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -96,7 +96,7 @@ GameObject:
   - component: {fileID: 3782527135023571820}
   - component: {fileID: 3782527135023571818}
   - component: {fileID: 3782527135023571819}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: scv01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -148,7 +148,7 @@ MonoBehaviour:
   team: 0
   player: j
   unitName: 
-  teamColor: {r: 0.8862745, g: 0.7764706, b: 0, a: 1}
+  teamColor: {r: 1, g: 0.8761062, b: 0, a: 1}
   hp: 100
   maxHP: 100
 --- !u!114 &3782527135023571818
@@ -193,8 +193,8 @@ GameObject:
   - component: {fileID: 1257387648420030373}
   - component: {fileID: 6968412505990558620}
   - component: {fileID: 2376180979607431928}
-  m_Layer: 0
-  m_Name: core
+  m_Layer: 7
+  m_Name: selectflag
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

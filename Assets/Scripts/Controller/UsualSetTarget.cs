@@ -2,11 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class UsualTryAttack : MonoBehaviour, ITryAttack
+public class UsualSetTarget : MonoBehaviour, ISetTarget
 {
-    [SerializeField] private OptionalValue<UnitController> target;
+    [SerializeField] protected OptionalValue<UnitController> target;
     // 表面射程范围 超过这个范围就会移动
-    [SerializeField] private float range;
+    [SerializeField] protected float range;
 
     public OptionalValue<UnitController> GetTarget()
     {
@@ -17,9 +17,9 @@ public class UsualTryAttack : MonoBehaviour, ITryAttack
     /// 设置要攻击的目标
     /// </summary>
     /// <param name="target"></param>
-    public void SetTarget(UnitController target)
+    public virtual void SetTarget(UnitController target)
     {
-        if (target == null)
+        if (target == null || !target.gameObject.activeInHierarchy)
         {
             this.target.enabled = false;
             return;
