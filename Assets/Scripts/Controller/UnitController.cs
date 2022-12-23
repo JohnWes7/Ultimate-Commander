@@ -16,13 +16,14 @@ public class UnitController : MonoBehaviour
         SetColor(teamColor, "colour");
     }
 
-    public void Init(int team, string player, string unitName, Color teamcolor, int hp)
+    public void Init(int team, string player, string unitName, Color teamcolor, int hp, int maxHP)
     {
         this.team = team;
         this.player = player;
         this.unitName = unitName;
         this.teamColor = teamcolor;
         this.hp = hp;
+        this.maxHP = maxHP;
     }
 
     public void SetColor(Color color, string name)

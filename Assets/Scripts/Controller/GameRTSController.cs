@@ -14,11 +14,18 @@ public class GameRTSController : MonoBehaviour
     [SerializeField] private int team;
     [SerializeField] private string player;
     [SerializeField] private float clicktimer;
+    [SerializeField] public static GameRTSController Instance;
+
+    private void Awake()
+    {
+        Init(0, "j");
+        Instance = this;
+    }
 
     // Start is called before the first frame update
     void Start()
     {
-        Init(0, "j");
+        
     }
 
     // Update is called once per frame
@@ -194,11 +201,7 @@ public class GameRTSController : MonoBehaviour
             clicktimer += Time.deltaTime;
             if (clicktimer < 1f && (startMousePos - Input.mousePosition).magnitude < 3)
             {
-                foreach (var item in selectedUnits)
-                {
-                    item.SetSelectedAni(false);
-                }
-                selectedUnits.Clear();
+                ClearSelectedUnits();
 
                 Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
                 RaycastHit raycastHit;
@@ -236,13 +239,18 @@ public class GameRTSController : MonoBehaviour
         return raycastHits;
     }
 
-    private void UpdateSelectedUnitsList(RaycastHit[] raycastHits)
+    private void ClearSelectedUnits()
     {
         foreach (UnitController item in selectedUnits)
         {
             item.SetSelectedAni(false);
         }
         selectedUnits.Clear();
+    }
+
+    private void UpdateSelectedUnitsList(RaycastHit[] raycastHits)
+    {
+        ClearSelectedUnits();
 
         foreach (RaycastHit item in raycastHits)
         {
@@ -280,5 +288,14 @@ public class GameRTSController : MonoBehaviour
     {
         this.team = team;
         this.player = player;
+    }
+
+    public void SetActive(bool value)
+    {
+        if (!value)
+        {
+
+        }
+        this.enabled = value;
     }
 }

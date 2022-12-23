@@ -27,7 +27,7 @@ public class FireTankBullet : MonoBehaviour, IFire
             instQua = FirePos.value.rotation;
         }
 
-        IBullet temp = Instantiate<GameObject>(BulletData.Instance.TankBulletPrefab, FirePos.value.position, FirePos.value.rotation).GetComponent<IBullet>();
+        IBullet temp = Instantiate<GameObject>(BulletPrefabs.Instance.TankBulletPrefab, FirePos.value.position, FirePos.value.rotation).GetComponent<IBullet>();
         temp.SetTarget(target, firefrom, damage, speed);
     }
 }

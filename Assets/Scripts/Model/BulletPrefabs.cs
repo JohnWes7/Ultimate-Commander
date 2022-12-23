@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BulletData : Single<BulletData>
+public class BulletPrefabs : Single<BulletPrefabs>
 {
     private GameObject tankBulletPrefab;
     public GameObject TankBulletPrefab
@@ -13,7 +13,7 @@ public class BulletData : Single<BulletData>
         }
     }
 
-    public BulletData()
+    public BulletPrefabs()
     {
         tankBulletPrefab = Resources.Load<GameObject>(ResourcesPath.TankBullet_PATH);
     }
