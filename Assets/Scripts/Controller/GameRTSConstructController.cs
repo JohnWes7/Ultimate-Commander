@@ -8,7 +8,6 @@ public class GameRTSConstructController : MonoBehaviour
     public static GameRTSConstructController Instance { get => instance; }
 
     [SerializeField] private bool isConstruct;
-    
 
     private void Awake()
     {

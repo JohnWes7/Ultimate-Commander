@@ -10,10 +10,19 @@ public class UnitController : MonoBehaviour
     [SerializeField] Color teamColor;
     [SerializeField] private int hp;
     [SerializeField] private int maxHP;
+    [SerializeField] private HPBarController hpBarController;
 
     protected virtual void Awake()
     {
         SetColor(teamColor, "colour");
+    }
+
+    private void Start()
+    {
+        //Debug.Log());
+        //Instantiate<GameObject>(UIPrefabs.Instance.HPBarPrefab, transform.root.GetComponentInChildren<Canvas>().transform);
+        hpBarController = Instantiate<GameObject>(UIPrefabs.Instance.HPBarPrefab, GameObject.Find("Canvas").transform).GetComponent<HPBarController>();
+        hpBarController.Init(hp, maxHP, this);
     }
 
     public void Init(int team, string player, string unitName, Color teamcolor, int hp, int maxHP)
@@ -105,5 +114,19 @@ public class UnitController : MonoBehaviour
     public void SetHP(int hp)
     {
         this.hp = Mathf.Clamp(hp, 0, maxHP);
+        this.hpBarController.Updatehp(hp, maxHP, this);
+    }
+
+    private void OnDestroy()
+    {
+        try
+        {
+            Destroy(hpBarController.gameObject);
+        }
+        catch (System.Exception)
+        {
+
+        }
+        
     }
 }
