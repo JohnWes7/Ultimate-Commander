@@ -96,6 +96,7 @@ GameObject:
   - component: {fileID: 3782527135023571820}
   - component: {fileID: 3782527135023571818}
   - component: {fileID: 3782527135023571819}
+  - component: {fileID: 869826347467269334}
   m_Layer: 7
   m_Name: scv01
   m_TagString: Untagged
@@ -151,6 +152,11 @@ MonoBehaviour:
   teamColor: {r: 1, g: 0.8761062, b: 0, a: 1}
   hp: 100
   maxHP: 100
+  hpBarController: {fileID: 0}
+  testtemplist: []
+  references:
+    version: 2
+    RefIds: []
 --- !u!114 &3782527135023571818
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -182,6 +188,23 @@ MonoBehaviour:
   dest:
     value: {x: 0, y: 0, z: 0}
     enabled: 0
+--- !u!114 &869826347467269334
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4089081212224020038}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9664f63a057042d46bf371fe33e43da7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ConstructNameList:
+  - Factory
+  - a
+  - b
+  - c
 --- !u!1 &5723796284830775970
 GameObject:
   m_ObjectHideFlags: 0

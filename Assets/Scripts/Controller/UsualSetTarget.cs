@@ -17,16 +17,22 @@ public class UsualSetTarget : MonoBehaviour, ISetTarget
     /// 设置要攻击的目标
     /// </summary>
     /// <param name="target"></param>
-    public virtual void SetTarget(UnitController target)
+    public virtual void SetTarget<T>(T target)
     {
-        if (target == null || !target.gameObject.activeInHierarchy)
+        if (!(target is UnitController) || target == null)
+        {
+            return;
+        }
+
+        UnitController unitarget = target as UnitController;
+        if (!unitarget.gameObject.activeInHierarchy)
         {
             this.target.enabled = false;
             return;
         }
 
         // 不能是友军
-        if (target.GetTeam() == GetComponent<UnitController>().GetTeam())
+        if (unitarget.GetTeam() == GetComponent<UnitController>().GetTeam())
         {
             this.target.enabled = false;
             return;
@@ -34,27 +40,32 @@ public class UsualSetTarget : MonoBehaviour, ISetTarget
 
         // 必须要能被攻击
         IBeDamage beDamage;
-        if (!target.TryGetComponent<IBeDamage>(out beDamage))
+        if (!unitarget.TryGetComponent<IBeDamage>(out beDamage))
         {
             this.target.enabled = false;
             return;
         }
 
-        this.target.value = target;
+        this.target.value = unitarget;
         this.target.enabled = true;
     }
 
-    public void Stop()
+    public virtual void Stop()
     {
         target.enabled = false;
     }
 
-    private void Update()
+    protected virtual void UpdateTarget()
     {
-        if (target.value == null)
+        if (target.value == null || !target.value.gameObject.activeInHierarchy)
         {
             target.enabled = false;
         }
+    }
+
+    private void Update()
+    {
+        UpdateTarget();
 
         // 如果有下达指令的目标 监测是否在攻击距离里面
         if (target.enabled)

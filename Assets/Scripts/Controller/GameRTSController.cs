@@ -9,17 +9,19 @@ public class GameRTSController : MonoBehaviour
 {
     [SerializeField] private Vector3 startMousePos;
     [SerializeField] private Vector3 endMousePos;
-    [SerializeField] private List<UnitController> selectedUnits = new List<UnitController>();
-    private GameObject selectRect;
+    [SerializeField] private MyList<UnitController> selectedUnits = new MyList<UnitController>();
+    [SerializeField] private GameObject selectRect;
     [SerializeField] private int team;
     [SerializeField] private string player;
     [SerializeField] private float clicktimer;
-    [SerializeField] public static GameRTSController Instance;
+    [SerializeField] public static GameRTSController Instance { get; private set; }
 
     private void Awake()
     {
         Init(0, "j");
         Instance = this;
+        // 给list加回调函数
+        selectedUnits.unityEvents.AddListener(UpdateConstructUI);
     }
 
     // Start is called before the first frame update
@@ -33,6 +35,14 @@ public class GameRTSController : MonoBehaviour
     {
         SelectUnit();
         RightClick();
+    }
+
+    public void UpdateConstructUI()
+    {
+        if (GamePanelController.Instance)
+        {
+            GamePanelController.Instance.UpdateConstructIcon(selectedUnits);
+        }
     }
 
     /// <summary>
@@ -71,7 +81,7 @@ public class GameRTSController : MonoBehaviour
                             ISetTarget attack;
                             if (item.gameObject.TryGetComponent<ISetTarget>(out attack))
                             {
-                                attack.SetTarget(unitController);
+                                attack.SetTarget<UnitController>(unitController);
                             }
                         }
                     }
@@ -214,7 +224,7 @@ public class GameRTSController : MonoBehaviour
                         if (unitController.GetPlayer() == this.player)
                         {
                             unitController.SetSelectedAni(true);
-                            selectedUnits.Add(unitController);
+                            selectedUnits.AddWithFallback(unitController);
                         }
                     }
                 }
@@ -222,6 +232,12 @@ public class GameRTSController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 框选物理检测
+    /// </summary>
+    /// <param name="startMousePos"></param>
+    /// <param name="endMousePos"></param>
+    /// <returns></returns>
     private RaycastHit[] SelectRectCast(Vector3 startMousePos, Vector3 endMousePos)
     {
         Vector3 startSelectPos = Camera.main.ScreenToWorldPoint(startMousePos + Camera.main.transform.position.y * Vector3.forward);
@@ -239,19 +255,27 @@ public class GameRTSController : MonoBehaviour
         return raycastHits;
     }
 
+    /// <summary>
+    /// 清除所有框选单位
+    /// </summary>
     private void ClearSelectedUnits()
     {
         foreach (UnitController item in selectedUnits)
         {
             item.SetSelectedAni(false);
         }
-        selectedUnits.Clear();
+        selectedUnits.ClearWithFallback();
     }
 
+    /// <summary>
+    /// 根据物理碰撞更新unitsList
+    /// </summary>
+    /// <param name="raycastHits"></param>
     private void UpdateSelectedUnitsList(RaycastHit[] raycastHits)
     {
         ClearSelectedUnits();
 
+        List<UnitController> unitstemp = new List<UnitController>();
         foreach (RaycastHit item in raycastHits)
         {
             // 二次判断是否在框选框中被选中
@@ -272,13 +296,17 @@ public class GameRTSController : MonoBehaviour
                 if (unitController.GetPlayer() == player)
                 {
                     unitController.SetSelectedAni(true);
-                    selectedUnits.Add(unitController);
+                    unitstemp.Add(unitController);
                 }
             }
         }
+        selectedUnits.AddRangeWithFallback(unitstemp);
     }
     #endregion
 
+    /// <summary>
+    /// debug
+    /// </summary>
     public void debugselectline()
     {
         Debug.DrawLine(Camera.main.transform.position, Camera.main.ScreenToWorldPoint(Input.mousePosition + new Vector3(0, 0, 100)), Color.red);

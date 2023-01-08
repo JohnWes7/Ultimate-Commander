@@ -1,0 +1,6 @@
+{
+    "factory": {
+        "ModelPrefabPath": "Model/Factory",
+        "PrefabPath": "Prefabs/Unit/Factory"
+    }
+}

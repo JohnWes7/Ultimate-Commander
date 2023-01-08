@@ -8,6 +8,6 @@ public class UIPrefabs : Single<UIPrefabs>
 
     public UIPrefabs()
     {
-        HPBarPrefab = Resources.Load<GameObject>(ResourcesPath.HpbarPrefab);
+        HPBarPrefab = Resources.Load<GameObject>(ResourcesPath.HpbarPrefab_PATH);
     }
 }

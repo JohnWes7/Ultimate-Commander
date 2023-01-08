@@ -11,6 +11,7 @@ public class UnitController : MonoBehaviour
     [SerializeField] private int hp;
     [SerializeField] private int maxHP;
     [SerializeField] private HPBarController hpBarController;
+    [SerializeReference] private List<object> testtemplist;
 
     protected virtual void Awake()
     {
@@ -23,6 +24,7 @@ public class UnitController : MonoBehaviour
         //Instantiate<GameObject>(UIPrefabs.Instance.HPBarPrefab, transform.root.GetComponentInChildren<Canvas>().transform);
         hpBarController = Instantiate<GameObject>(UIPrefabs.Instance.HPBarPrefab, GameObject.Find("Canvas").transform).GetComponent<HPBarController>();
         hpBarController.Init(hp, maxHP, this);
+        MonoBehaviour[] temps = GetComponents<MonoBehaviour>();
     }
 
     public void Init(int team, string player, string unitName, Color teamcolor, int hp, int maxHP)

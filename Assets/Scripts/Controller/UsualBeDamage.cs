@@ -24,7 +24,7 @@ public class UsualBeDamage : MonoBehaviour, IBeDamage
 
     public void BeDamage(int damage, IBullet frombullet, UnitController fromunit)
     {
-        Debug.Log(damage);
+        //Debug.Log(damage);
         unit.value.SetHP(unit.value.GetHP() - damage);
         if (unit.value.GetHP() <= 0)
         {

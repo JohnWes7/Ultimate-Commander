@@ -2,17 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class IBeConstruct : MonoBehaviour
+public interface IBeConstruct
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public void BeConstruct(int value);
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    public void AddConstructer(UnitController unitController);
+
+    public void RemoveConstructer(UnitController unitController);
 }

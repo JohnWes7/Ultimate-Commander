@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 
+[System.Serializable]
 public class UsualVelocity : MonoBehaviour, IMoveVelocity
 {
     [SerializeField] private OptionalValue<Vector3> velocity;
-    [SerializeField] private float speed = 3f;
+    [SerializeField] private float speed;
 
     /// <summary>
     /// 设置移动方向
