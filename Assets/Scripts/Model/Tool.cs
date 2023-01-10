@@ -137,6 +137,10 @@ public static class Tool
     {
         //读取json
         string json = Resources.Load<TextAsset>(PATH).text;
+        if (json == null)
+        {
+            Debug.LogError("resource 文件不存在:" + PATH);
+        }
         return json;
     }
     /// <summary>

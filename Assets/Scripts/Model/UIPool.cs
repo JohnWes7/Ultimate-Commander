@@ -40,10 +40,10 @@ public class UIPool : MonoBehaviour
     /// <returns></returns>
     public bool TryGetGameObject(string prefabNameNoClone, out GameObject result)
     {
-        foreach (var item in pool)
-        {
-            Debug.Log(item.Key + ":" + item.Value.Count);
-        }
+        //foreach (var item in pool)
+        //{
+        //    Debug.Log(item.Key + ":" + item.Value.Count);
+        //}
         result = null;
         prefabNameNoClone += "(Clone)";
 

@@ -7,12 +7,11 @@ public class ResourcesPath
     // UI
     public static string GameRTSController_selectRect_PATH = "Prefabs/UI/Rect";
     public static string HpbarPrefab_PATH = "Prefabs/UI/HPbar";
+    public static string NoneIconPath = "Prefabs/UI/factory";
 
     //Unit
     public static string TankBullet_PATH = "Prefabs/Bullet/TankBullet";
-    public static string Factory_PATH = "Prefabs/Unit/Factory";
-    public static string NonePrefab = "Prefabs/Unit/Factory";
-    //public static string GameRTSController_selectRect_PATH { get => gameRTSController_selectRect_PATH;}
-
-    public static string BuildingData_Path = "Json/BuildingData";
+    public static string NonePrefab = "Prefabs/Default/factory_model";
+    
+    public static string BuildingData_Path = "unit/json/BuildingData";
 }

@@ -44,14 +44,14 @@ public class UnitPrefabs : Single<UnitPrefabs>
 
     public void TestClassToJson()
     {
-        UnitInfoDict = new Dictionary<string, UnitInfo>();
-        UnitInfo temp = new UnitInfo();
-        temp.ModelPrefabPath = ResourcesPath.Factory_PATH;
-        temp.PrefabPath = ResourcesPath.Factory_PATH;
-        UnitInfoDict.Add("factory", temp);
-        //JsonSerializerSettings jsonSerializerSettings = new JsonSerializerSettings();
-        //jsonSerializerSettings.
-        Debug.Log(JsonConvert.SerializeObject(UnitInfoDict));
+        //UnitInfoDict = new Dictionary<string, UnitInfo>();
+        //UnitInfo temp = new UnitInfo();
+        //temp.ModelPrefabPath = ResourcesPath.Factory_PATH;
+        //temp.PrefabPath = ResourcesPath.Factory_PATH;
+        //UnitInfoDict.Add("factory", temp);
+        ////JsonSerializerSettings jsonSerializerSettings = new JsonSerializerSettings();
+        ////jsonSerializerSettings.
+        //Debug.Log(JsonConvert.SerializeObject(UnitInfoDict));
         
     }
 }
@@ -62,6 +62,7 @@ public class UnitPrefabs : Single<UnitPrefabs>
 public class UnitInfo
 {
     private static string NonePrefab = ResourcesPath.NonePrefab;
+    private static string NoneIcon = ResourcesPath.NoneIconPath;
 
     public string Name { get; private set; }
 
@@ -78,26 +79,53 @@ public class UnitInfo
     /// <summary>
     /// 初始化数据: 赋予key名字为单位名字 以及加载路径里面的预制体和图片
     /// </summary>
-    /// <param name="name"></param>
+    /// <param name="key"></param>
     /// <param name="fromResources"></param>
-    public void InitAndLoadPrefab(string name, bool fromResources = true)
+    public void InitAndLoadPrefab(string key, bool fromResources = true)
     {
-        this.Name = name;
+        // 用key作为名字保证名字唯一
+        this.Name = key;
 
-        Prefab = Resources.Load<GameObject>(PrefabPath);
-        if (Prefab == null)
+        if (fromResources)
         {
-            Prefab = Resources.Load<GameObject>(NonePrefab);
-            Debug.Log("未找到模型: " + PrefabPath);
-        }
+            // 载入模型
+            Prefab = Resources.Load<GameObject>(PrefabPath);
+            if (Prefab == null)
+            {
+                Prefab = Resources.Load<GameObject>(NonePrefab);
+                Debug.Log("未找到模型: " + PrefabPath);
+                if (Prefab == null)
+                {
+                    Debug.LogError("Error 导入默认模型出错");
+                }
+            }
 
-        ModelPrefab = Resources.Load<GameObject>(ModelPrefabPath);
-        if (ModelPrefab == null)
+            ModelPrefab = Resources.Load<GameObject>(ModelPrefabPath);
+            if (ModelPrefab == null)
+            {
+                ModelPrefab = Resources.Load<GameObject>(NonePrefab);
+                Debug.Log("未找到模型: " + ModelPrefabPath);
+                if (ModelPrefab == null)
+                {
+                    Debug.LogError("Error 导入默认模型出错");
+                }
+            }
+
+            //载入图片
+            sprite = Resources.Load<Sprite>(IconPath);
+            if (sprite == null)
+            {
+                sprite = Resources.Load<Sprite>(NoneIcon);
+                Debug.Log("未找到Icon: " + IconPath);
+                if (ModelPrefab == null)
+                {
+                    Debug.LogError("Error 导入默认Icon出错");
+                }
+            }
+        }
+        else
         {
-            ModelPrefab = Resources.Load<GameObject>(NonePrefab);
-            Debug.Log("未找到模型: " + ModelPrefabPath);
+            Debug.LogError("不支持从另外地方导入");
         }
-
-        //载入图片
     }
 }

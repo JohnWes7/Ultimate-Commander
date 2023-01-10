@@ -1,0 +1,7 @@
+{
+    "factory": {
+        "ModelPrefabPath": "unit/model/factory",
+        "PrefabPath": "unit/prefabs/factory",
+        "IconPath": "unit/icon/factory"
+    }
+}
