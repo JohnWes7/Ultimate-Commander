@@ -9,6 +9,7 @@ public class ConstructIconController : MonoBehaviour
     [SerializeField] private UnitInfo unitInfo;
     [SerializeField] private TextMeshProUGUI text;
     [SerializeField] private Image image;
+    [SerializeField] private Button button;
 
     /// <summary>
     /// 初始化显示
@@ -25,5 +26,11 @@ public class ConstructIconController : MonoBehaviour
         }
 
         text.text = this.unitInfo.Name;
+    }
+
+    public void ButtonFallback()
+    {
+        Debug.Log("建造按钮回调 " + unitInfo.Name);
+        GameRTSConstructController.Instance.SetConstructUnit(unitInfo);
     }
 }

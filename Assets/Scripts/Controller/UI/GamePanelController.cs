@@ -41,11 +41,13 @@ public class GamePanelController : MonoBehaviour
             }
         }
 
-        //string test = string.Join("\n", idlist);
-        //if (testtext)
-        //{
-        //    testtext.text = test;
-        //}
+        // debug
+        testtext.gameObject.SetActive(true);
+        string test = string.Join("\n", idlist);
+        if (testtext)
+        {
+            testtext.text = test;
+        }
 
         // 清除之前的
         foreach (ConstructIconController item in constructIconControllersList)

@@ -14,6 +14,8 @@ public class GameRTSController : MonoBehaviour
     [SerializeField] private int team;
     [SerializeField] private string player;
     [SerializeField] private float clicktimer;
+    [SerializeField] private bool isSelecting;
+
     [SerializeField] public static GameRTSController Instance { get; private set; }
 
     private void Awake()
@@ -22,6 +24,13 @@ public class GameRTSController : MonoBehaviour
         Instance = this;
         // 给list加回调函数
         selectedUnits.unityEvents.AddListener(UpdateConstructUI);
+    }
+
+    public void Init(int team, string player)
+    {
+        this.team = team;
+        this.player = player;
+        isSelecting = false;
     }
 
     // Start is called before the first frame update
@@ -171,6 +180,7 @@ public class GameRTSController : MonoBehaviour
         {
             // 打开选择框ui 记录一开始鼠标位置和指向的向量
             selectRect.SetActive(true);
+            isSelecting = true;
             startMousePos = Input.mousePosition;
 
             clicktimer = Time.deltaTime;
@@ -199,6 +209,7 @@ public class GameRTSController : MonoBehaviour
         {
             // 关闭选择框
             selectRect.SetActive(false);
+            isSelecting = false;
 
             // 碰撞检测选择单位
             endMousePos = Input.mousePosition;
@@ -307,23 +318,29 @@ public class GameRTSController : MonoBehaviour
     /// <summary>
     /// debug
     /// </summary>
-    public void debugselectline()
+    private void debugselectline()
     {
         Debug.DrawLine(Camera.main.transform.position, Camera.main.ScreenToWorldPoint(Input.mousePosition + new Vector3(0, 0, 100)), Color.red);
     }
 
-    public void Init(int team, string player)
+    
+
+    //public void SetActive(bool value)
+    //{
+    //    if (!value)
+    //    {
+
+    //    }
+    //    this.enabled = value;
+    //}
+
+    public string GetPlayer()
     {
-        this.team = team;
-        this.player = player;
+        return player;
     }
 
-    public void SetActive(bool value)
+    public bool IsSelecting()
     {
-        if (!value)
-        {
-
-        }
-        this.enabled = value;
+        return isSelecting;
     }
 }
