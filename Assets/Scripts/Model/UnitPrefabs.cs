@@ -21,8 +21,8 @@ public class UnitPrefabs : Single<UnitPrefabs>
         {
             item.Value.InitAndLoadPrefab(item.Key);
         }
-        Debug.Log(json + "UnitPrefabs 初始化成功");
-        Debug.Log("一共" + UnitInfoDict.Keys.Count.ToString() + "条数据\n分别为:\n" + string.Join("\n",UnitInfoDict.Keys));
+        Debug.Log("UnitPrefabs : \n" + json + "\nUnitPrefabs 初始化成功");
+        Debug.Log("UnitPrefabs : 一共" + UnitInfoDict.Keys.Count.ToString() + "条数据\n分别为:\n" + string.Join("\n",UnitInfoDict.Keys));
     }
 
     /// <summary>
@@ -64,17 +64,20 @@ public class UnitInfo
     private static string NonePrefab = ResourcesPath.NonePrefab;
     private static string NoneIcon = ResourcesPath.NoneIconPath;
 
-    public string Name { get; private set; }
-
     [JsonProperty] public string ModelPrefabPath;
     [JsonProperty] public string PrefabPath;
     [JsonProperty] public string IconPath;
+    [SerializeField] private string name;
+    [SerializeField] private GameObject prefab;
+    [SerializeField] private GameObject modelPrefab;
+    [SerializeField] private Sprite sprite;
 
-    public GameObject Prefab { get; private set; }
+     public string Name { get => name; private set => name = value; }
+     public GameObject Prefab { get => prefab; private set => prefab = value; }
 
-    public GameObject ModelPrefab { get; private set; }
+     public GameObject ModelPrefab { get => modelPrefab; private set => modelPrefab = value; }
 
-    public Sprite sprite { get; private set; }
+     public Sprite Sprite { get => sprite; private set => sprite = value; }
 
     /// <summary>
     /// 初始化数据: 赋予key名字为单位名字 以及加载路径里面的预制体和图片
@@ -112,10 +115,10 @@ public class UnitInfo
             }
 
             //载入图片
-            sprite = Resources.Load<Sprite>(IconPath);
-            if (sprite == null)
+            Sprite = Resources.Load<Sprite>(IconPath);
+            if (Sprite == null)
             {
-                sprite = Resources.Load<Sprite>(NoneIcon);
+                Sprite = Resources.Load<Sprite>(NoneIcon);
                 Debug.Log("未找到Icon: " + IconPath);
                 if (ModelPrefab == null)
                 {

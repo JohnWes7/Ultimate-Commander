@@ -47,7 +47,7 @@ public class UIBanRTSSelect : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 
     private void BanConstruct()
     {
-        GameRTSConstructController.Instance.SetCanConstruct(false);
+        GameRTSConstructController.Instance.SetConstructModel(false);
     }
 
     private void EnableRTS()
@@ -57,6 +57,6 @@ public class UIBanRTSSelect : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 
     private void EnableConstruct()
     {
-        GameRTSConstructController.Instance.SetCanConstruct(true);
+        GameRTSConstructController.Instance.SetConstructModel(true);
     }
 }

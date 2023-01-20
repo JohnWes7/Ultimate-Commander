@@ -14,8 +14,7 @@ public class GameRTSController : MonoBehaviour
     [SerializeField] private int team;
     [SerializeField] private string player;
     [SerializeField] private float clicktimer;
-    [SerializeField] private bool isSelecting;
-
+    [SerializeField] private bool isSelecting; 
     [SerializeField] public static GameRTSController Instance { get; private set; }
 
     private void Awake()
@@ -42,6 +41,12 @@ public class GameRTSController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //如果是建造模式就不更新
+        if (GameRTSConstructController.Instance != null && GameRTSConstructController.Instance.IsConstruct)
+        {
+            return;
+        }
+
         SelectUnit();
         RightClick();
     }
@@ -54,6 +59,7 @@ public class GameRTSController : MonoBehaviour
         }
     }
 
+    // 指令
     /// <summary>
     /// 右键指令
     /// </summary>
@@ -126,6 +132,40 @@ public class GameRTSController : MonoBehaviour
     }
 
     /// <summary>
+    /// 当前选中的所有unit停止
+    /// </summary>
+    public void OrderStop()
+    {
+        // 遍历所有物体
+        foreach (var unit in selectedUnits)
+        {
+            // 执行所有停止
+            IStop[] stops = unit.GetComponents<IStop>();
+            foreach (var stop in stops)
+            {
+                stop.Stop();
+            }
+        }
+    }
+
+    /// <summary>
+    /// 当前选中的单位建造
+    /// </summary>
+    /// <param name="beConstruct"></param>
+    public void OrderConstruct(IBeConstruct beConstruct)
+    {
+        foreach (var item in selectedUnits)
+        {
+            IConstruct constructUnit;
+            if (item.TryGetComponent<IConstruct>(out constructUnit))
+            {
+                
+
+            }
+        }
+    }
+
+    /// <summary>
     /// 创造一个正方形的位置矩阵
     /// </summary>
     /// <param name="dest"></param>
@@ -165,6 +205,7 @@ public class GameRTSController : MonoBehaviour
         return positions;
     }
 
+    // 框选
     #region 框选方法
     public void SelectUnit()
     {
@@ -323,17 +364,7 @@ public class GameRTSController : MonoBehaviour
         Debug.DrawLine(Camera.main.transform.position, Camera.main.ScreenToWorldPoint(Input.mousePosition + new Vector3(0, 0, 100)), Color.red);
     }
 
-    
-
-    //public void SetActive(bool value)
-    //{
-    //    if (!value)
-    //    {
-
-    //    }
-    //    this.enabled = value;
-    //}
-
+    // 属性方法
     public string GetPlayer()
     {
         return player;
@@ -342,5 +373,10 @@ public class GameRTSController : MonoBehaviour
     public bool IsSelecting()
     {
         return isSelecting;
+    }
+
+    public void SetControlActive(bool value)
+    {
+        this.enabled = value;
     }
 }

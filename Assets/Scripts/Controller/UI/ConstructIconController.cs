@@ -20,9 +20,9 @@ public class ConstructIconController : MonoBehaviour
         this.unitInfo = unitInfo;
 
         // 更改图标
-        if (this.unitInfo.sprite)
+        if (this.unitInfo.Sprite)
         {
-            image.sprite = unitInfo.sprite;
+            image.sprite = unitInfo.Sprite;
         }
 
         text.text = this.unitInfo.Name;
@@ -30,7 +30,7 @@ public class ConstructIconController : MonoBehaviour
 
     public void ButtonFallback()
     {
-        Debug.Log("建造按钮回调 " + unitInfo.Name);
+        Debug.Log("ConstructIconController : ButtonFallback 建造按钮回调 " + unitInfo.Name);
         GameRTSConstructController.Instance.SetConstructUnit(unitInfo);
     }
 }

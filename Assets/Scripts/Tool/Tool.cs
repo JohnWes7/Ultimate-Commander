@@ -12,7 +12,7 @@ using UnityEngine.UI;
 public static class Tool
 {
     /// <summary>
-    /// 弃用的
+    /// 获得所有子物体包括自己
     /// </summary>
     /// <param name="parent"></param>
     /// <returns></returns>
@@ -20,9 +20,9 @@ public static class Tool
     {
         List<Transform> ans = new List<Transform>();
 
+        ans.Add(parent);
         if (parent.childCount == 0)
-        {
-            ans.Add(parent);
+        {    
             return ans;
         }
 

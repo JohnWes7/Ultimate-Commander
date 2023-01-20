@@ -7,10 +7,13 @@ public class GameRTSConstructController : MonoBehaviour
 {
     [SerializeField] private static GameRTSConstructController instance;
     [SerializeField] public static GameRTSConstructController Instance { get => instance; }
-    
-    [SerializeField] public bool isConstruct { get; private set; }
-    [SerializeField] public UnitInfo nowConstructUnitInfo { get; private set; }
+    [SerializeField] private bool isConstruct;
+    [SerializeField] public bool IsConstruct { get => isConstruct; private set => isConstruct = value; }
+    [SerializeField] public UnitInfo curUnitInfo { get; private set; }
     [SerializeField] private GameObject constructModelTemp;
+    [SerializeField] private GameObject baseConstructObject;
+    [SerializeField] private Material preSetMat;
+    [SerializeField, ColorUsage(true, true)] private Color preSetMatColor; 
     [SerializeField] private bool canConstruct;
 
     private void Awake()
@@ -22,7 +25,7 @@ public class GameRTSConstructController : MonoBehaviour
     private void Init()
     {
         canConstruct = true;
-        isConstruct = false;
+        IsConstruct = false;
     }
 
     // Start is called before the first frame update
@@ -34,17 +37,48 @@ public class GameRTSConstructController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (isConstruct && canConstruct)
+        // 建造
+        if (IsConstruct && canConstruct)
         {
-            
+            // 虚影跟随鼠标移动
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit raycastHit;
             if (Physics.Raycast(ray, out raycastHit, 1000f, 1 << LayerMask.NameToLayer("Ground")))
             {
-                constructModelTemp.transform.position = raycastHit.point;
+                if (constructModelTemp)
+                {
+                    constructModelTemp.transform.position = raycastHit.point;
+                }
+
+                // 左键开始建造
+                if (Input.GetKeyDown(KeyCode.Mouse0))
+                {
+                    GameObject obj = Instantiate(baseConstructObject, raycastHit.point, Quaternion.identity);
+                    GameObject model = Instantiate<GameObject>(curUnitInfo.ModelPrefab, obj.transform);
+                    // 初始化建造基址
+                    obj.GetComponent<IBeConstruct>().Init(curUnitInfo);
+                    // 更改物体的材质和颜色变为虚影
+                    SetMatForAllChildren(model, preSetMat, preSetMatColor);
+                }
+            }
+
+            // 右键取消建造
+            if (Input.GetKeyDown(KeyCode.Mouse1))
+            {
+                // 晚一帧设置为false 代表这一帧还算是在建造中
+                Debug.Log("CRCC : Update 取消建造 " + curUnitInfo.Name);
+                StartCoroutine(WaitOneFrame2SetisConstruct());
+                Destroy(constructModelTemp);
             }
         }
 
+    }
+
+    private IEnumerator WaitOneFrame2SetisConstruct()
+    {
+        yield return new WaitForEndOfFrame();
+
+        IsConstruct = false;
     }
 
     /// <summary>
@@ -53,11 +87,11 @@ public class GameRTSConstructController : MonoBehaviour
     /// <param name="unitInfo"></param>
     public void SetConstructUnit(UnitInfo unitInfo)
     {
-        Debug.Log("选定建造 " + unitInfo.Name);
-        isConstruct = true;
-        nowConstructUnitInfo = unitInfo;
+        Debug.Log("CRCC : SetConstructUnit 选定建造 " + unitInfo.Name);
+        IsConstruct = true;
+        curUnitInfo = unitInfo;
 
-        //如果连点得把上一个清除
+        // 如果连点得把上一个清除
         if (constructModelTemp)
         {
             Destroy(constructModelTemp);
@@ -65,21 +99,25 @@ public class GameRTSConstructController : MonoBehaviour
 
         // 生成新的
         constructModelTemp = Instantiate<GameObject>(unitInfo.ModelPrefab);
+        // 更改物体的材质和颜色变为虚影
+        SetMatForAllChildren(constructModelTemp, preSetMat, preSetMatColor);
+
         // 如果是在ui框里面就先不显示
         if (!canConstruct)
         {
             constructModelTemp.SetActive(false);
         }
-        
     }
 
     /// <summary>
-    /// 关闭开启建造模式 ui遮挡的时候就不能继续建造
+    /// 关闭开启建造模式 **并且隐藏虚影建筑** ui遮挡的时候就不能继续建造
     /// </summary>
     /// <param name="value"></param>
-    public void SetCanConstruct(bool value)
+    public void SetConstructModel(bool value)
     {
         canConstruct = value;
+
+        // 如果是开启建造模式
         if (canConstruct)
         {
             if (constructModelTemp)
@@ -87,6 +125,8 @@ public class GameRTSConstructController : MonoBehaviour
                 constructModelTemp.SetActive(true);
             }
         }
+
+        // 如果是关闭建造模式
         else
         {
             if (constructModelTemp)
@@ -94,5 +134,31 @@ public class GameRTSConstructController : MonoBehaviour
                 constructModelTemp.SetActive(false);
             }
         }
+    }
+
+    /// <summary>
+    /// 给物体下的所有带有渲染的地方替换材质和颜色
+    /// </summary>
+    /// <param name="gameObject"></param>
+    /// <param name="material"></param>
+    /// <param name="color"></param>
+    public void SetMatForAllChildren(GameObject gameObject, Material material, Color color)
+    {
+        // 获取所有子物体
+        List<Transform> gobjList = Tool.GetAllChildren(gameObject.transform);
+        Color originColor = material.color;
+        material.color = color;
+
+        // 给所有物体上色
+        foreach (Transform item in gobjList)
+        {
+            MeshRenderer meshRenderer;
+            if (item.TryGetComponent<MeshRenderer>(out meshRenderer))
+            {
+                meshRenderer.material = material;
+            }
+        }
+
+        material.color = originColor;
     }
 }

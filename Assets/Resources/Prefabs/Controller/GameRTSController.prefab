@@ -68,5 +68,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3df231e735d78584cb301527dbaed0b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isConstruct: 0
   constructModelTemp: {fileID: 0}
+  baseConstructObject: {fileID: 3024286717622327769, guid: 9d57d31afd2988e4985719cabe023125,
+    type: 3}
+  preSetMat: {fileID: 2100000, guid: d6047d94ce86f964ca33854452adb877, type: 2}
+  preSetMatColor: {r: 0.23529412, g: 2.9960785, b: 0, a: 1}
   canConstruct: 0
