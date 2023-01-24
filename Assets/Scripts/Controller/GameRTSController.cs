@@ -13,6 +13,7 @@ public class GameRTSController : MonoBehaviour
     [SerializeField] private GameObject selectRect;
     [SerializeField] private int team;
     [SerializeField] private string player;
+    [SerializeField] private Color teamColor;
     [SerializeField] private float clicktimer;
     [SerializeField] private bool isSelecting; 
     [SerializeField] public static GameRTSController Instance { get; private set; }
@@ -140,11 +141,20 @@ public class GameRTSController : MonoBehaviour
         foreach (var unit in selectedUnits)
         {
             // 执行所有停止
-            IStop[] stops = unit.GetComponents<IStop>();
-            foreach (var stop in stops)
-            {
-                stop.Stop();
-            }
+            OrderStop(unit);
+        }
+    }
+
+    /// <summary>
+    /// 停止某个单位
+    /// </summary>
+    /// <param name="unit"></param>
+    public void OrderStop(UnitController unit)
+    {
+        IStop[] stops = unit.GetComponents<IStop>();
+        foreach (var stop in stops)
+        {
+            stop.Stop();
         }
     }
 
@@ -159,8 +169,11 @@ public class GameRTSController : MonoBehaviour
             IConstruct constructUnit;
             if (item.TryGetComponent<IConstruct>(out constructUnit))
             {
-                
+                // 停止之前命令
+                OrderStop(item);
 
+                // 添加新建造指令
+                constructUnit.SetConstructTarget(beConstruct);
             }
         }
     }
@@ -378,5 +391,10 @@ public class GameRTSController : MonoBehaviour
     public void SetControlActive(bool value)
     {
         this.enabled = value;
+    }
+
+    public Color GetTeamColor()
+    {
+        return teamColor;
     }
 }

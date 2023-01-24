@@ -54,6 +54,7 @@ MonoBehaviour:
   selectRect: {fileID: 0}
   team: 0
   player: 
+  teamColor: {r: 1, g: 0.8745098, b: 0, a: 1}
   clicktimer: 0
   isSelecting: 0
 --- !u!114 &4403529241030358379
@@ -74,4 +75,5 @@ MonoBehaviour:
     type: 3}
   preSetMat: {fileID: 2100000, guid: d6047d94ce86f964ca33854452adb877, type: 2}
   preSetMatColor: {r: 0.23529412, g: 2.9960785, b: 0, a: 1}
+  preSetMatNagetiveColor: {r: 2.9960785, g: 0.03025402, b: 0, a: 1}
   canConstruct: 0

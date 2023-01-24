@@ -1,7 +1,8 @@
 {
     "factory": {
-        "ModelPrefabPath": "unit/model/factory",
-        "PrefabPath": "unit/prefabs/factory",
-        "IconPath": "unit/icon/factory"
+        "model_prefab_path": "unit/model/factory",
+        "prefab_path": "unit/prefabs/factory",
+        "icon_path": "unit/icon/factory",
+        "max_hp" : 1000
     }
 }

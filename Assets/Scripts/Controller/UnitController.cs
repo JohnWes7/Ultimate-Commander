@@ -7,19 +7,16 @@ public class UnitController : MonoBehaviour
     [SerializeField] private int team;
     [SerializeField] private string player;
     [SerializeField] private string unitName;
-    [SerializeField] Color teamColor;
+    [SerializeField] private Color teamColor;
     [SerializeField] private int hp;
     [SerializeField] private int maxHP;
     [SerializeField] private HPBarController hpBarController;
     [SerializeReference] private List<object> testtemplist;
 
-    protected virtual void Awake()
-    {
-        SetColor(teamColor, "colour");
-    }
-
     private void Start()
     {
+        // 更改颜色
+        SetColor(teamColor, "colour");
         //Debug.Log());
         //Instantiate<GameObject>(UIPrefabs.Instance.HPBarPrefab, transform.root.GetComponentInChildren<Canvas>().transform);
         hpBarController = Instantiate<GameObject>(UIPrefabs.Instance.HPBarPrefab, GameObject.Find("Canvas").transform).GetComponent<HPBarController>();
@@ -29,12 +26,16 @@ public class UnitController : MonoBehaviour
 
     public void Init(int team, string player, string unitName, Color teamcolor, int hp, int maxHP)
     {
+        Debug.Log("UnitController : Init 初始化数据\n" + team + "\n" + player + "\n" + unitName);
         this.team = team;
         this.player = player;
         this.unitName = unitName;
         this.teamColor = teamcolor;
         this.hp = hp;
         this.maxHP = maxHP;
+
+        // 更改颜色
+        SetColor(teamColor, "colour");
     }
 
     public void SetColor(Color color, string name)

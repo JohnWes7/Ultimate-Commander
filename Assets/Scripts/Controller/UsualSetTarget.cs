@@ -8,6 +8,11 @@ public class UsualSetTarget : MonoBehaviour, ISetTarget
     // 表面射程范围 超过这个范围就会移动
     [SerializeField] protected float range;
 
+    public float GetRange()
+    {
+        return range;
+    }
+
     public OptionalValue<UnitController> GetTarget()
     {
         return target;

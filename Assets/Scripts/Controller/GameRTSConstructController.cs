@@ -13,7 +13,8 @@ public class GameRTSConstructController : MonoBehaviour
     [SerializeField] private GameObject constructModelTemp;
     [SerializeField] private GameObject baseConstructObject;
     [SerializeField] private Material preSetMat;
-    [SerializeField, ColorUsage(true, true)] private Color preSetMatColor; 
+    [SerializeField, ColorUsage(true, true)] private Color preSetMatColor;
+    [SerializeField, ColorUsage(true, true)] private Color preSetMatNagetiveColor; 
     [SerializeField] private bool canConstruct;
 
     private void Awake()
@@ -50,8 +51,8 @@ public class GameRTSConstructController : MonoBehaviour
                     constructModelTemp.transform.position = raycastHit.point;
                 }
 
-                // 左键开始建造
-                if (Input.GetKeyDown(KeyCode.Mouse0))
+                // 左键开始建造 TODO : 建造碰撞检测
+                if (Input.GetKeyUp(KeyCode.Mouse0))
                 {
                     GameObject obj = Instantiate(baseConstructObject, raycastHit.point, Quaternion.identity);
                     GameObject model = Instantiate<GameObject>(curUnitInfo.ModelPrefab, obj.transform);
@@ -59,19 +60,30 @@ public class GameRTSConstructController : MonoBehaviour
                     obj.GetComponent<IBeConstruct>().Init(curUnitInfo);
                     // 更改物体的材质和颜色变为虚影
                     SetMatForAllChildren(model, preSetMat, preSetMatColor);
+
+                    // 下达建造指令
+                    GameRTSController.Instance.OrderConstruct(obj.GetComponent<IBeConstruct>());
+
+                    // 退出建造
+                    CancelConstruct();
                 }
             }
 
             // 右键取消建造
             if (Input.GetKeyDown(KeyCode.Mouse1))
             {
-                // 晚一帧设置为false 代表这一帧还算是在建造中
-                Debug.Log("CRCC : Update 取消建造 " + curUnitInfo.Name);
-                StartCoroutine(WaitOneFrame2SetisConstruct());
-                Destroy(constructModelTemp);
+                CancelConstruct();
             }
         }
 
+    }
+
+    private void CancelConstruct()
+    {
+        // 晚一帧设置为false 代表这一帧还算是在建造中
+        Debug.Log("CRCC : Update 退出建造" + curUnitInfo.Name);
+        StartCoroutine(WaitOneFrame2SetisConstruct());
+        Destroy(constructModelTemp);
     }
 
     private IEnumerator WaitOneFrame2SetisConstruct()
@@ -82,7 +94,7 @@ public class GameRTSConstructController : MonoBehaviour
     }
 
     /// <summary>
-    /// 设置现在建造的单位 也就是拖动一个虚影出来开始建造
+    /// 设置现在建造的单位 也就是拖动一个虚影出来开始建造 给ui进行触发
     /// </summary>
     /// <param name="unitInfo"></param>
     public void SetConstructUnit(UnitInfo unitInfo)

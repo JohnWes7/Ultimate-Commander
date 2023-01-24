@@ -8,4 +8,5 @@ public interface ISetTarget : IStop
     // 反击 可以在行进路上和待机的时候 搜索目标攻击
     public void SetTarget<T>(T target);
     public OptionalValue<UnitController> GetTarget();
+    public float GetRange();
 }

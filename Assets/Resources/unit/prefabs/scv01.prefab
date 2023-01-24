@@ -97,6 +97,7 @@ GameObject:
   - component: {fileID: 3782527135023571818}
   - component: {fileID: 3782527135023571819}
   - component: {fileID: 869826347467269334}
+  - component: {fileID: 2954358907404080872}
   m_Layer: 7
   m_Name: scv01
   m_TagString: Untagged
@@ -201,10 +202,25 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ConstructNameList:
-  - Factory
-  - a
-  - b
-  - c
+  - factory
+  beConstruct:
+    enabled: 0
+--- !u!114 &2954358907404080872
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4089081212224020038}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dfcaf31adf3ebb84e8e37cd664b3ccda, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  target:
+    value: {fileID: 0}
+    enabled: 0
+  range: 10
 --- !u!1 &5723796284830775970
 GameObject:
   m_ObjectHideFlags: 0

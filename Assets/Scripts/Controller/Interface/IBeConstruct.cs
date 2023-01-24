@@ -6,11 +6,13 @@ public interface IBeConstruct
 {
     public void Init(UnitInfo unitInfo);
 
-    public void BeConstruct(int value);
+    public void BeConstruct();
 
-    public void AddConstructer(UnitController unitController);
+    public void AddConstructer(IConstruct unitController);
 
-    public void RemoveConstructer(UnitController unitController);
+    public void RemoveConstructer(IConstruct unitController);
 
     public UnitInfo GetUnitInfo();
+
+    public GameObject GetGameObject();
 }
