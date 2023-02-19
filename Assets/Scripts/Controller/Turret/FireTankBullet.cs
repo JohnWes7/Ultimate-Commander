@@ -8,7 +8,7 @@ public class FireTankBullet : MonoBehaviour, IFire
 
     private void Start()
     {
-        Transform pos = transform.Find("BulletFirePos");
+        Transform pos = FindBulletFirePos(this.transform);
         if (pos != null)
         {
             FirePos.value = pos;
@@ -16,8 +16,18 @@ public class FireTankBullet : MonoBehaviour, IFire
         }
     }
 
+    public static Transform FindBulletFirePos(Transform parent)
+    {
+        Transform pos = parent.Find("BulletFirePos");
+        if (pos == null)
+        {
+            return parent;
+        }
+        return pos;
+    }
 
-    public void Fire(UnitController target, UnitController firefrom, int damage, float speed)
+
+    public void Fire(UnitController target, UnitController firefrom, int damage, params object[] values)
     {
         Vector3 instPos = transform.position;
         Quaternion instQua = transform.rotation;
@@ -28,6 +38,6 @@ public class FireTankBullet : MonoBehaviour, IFire
         }
 
         IBullet temp = Instantiate<GameObject>(BulletPrefabs.Instance.TankBulletPrefab, FirePos.value.position, FirePos.value.rotation).GetComponent<IBullet>();
-        temp.SetTarget(target, firefrom, damage, speed);
+        temp.SetTarget(target, firefrom, damage, (float)values[0]);
     }
 }

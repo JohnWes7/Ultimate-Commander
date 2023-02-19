@@ -27,10 +27,10 @@ public class UsualConstruct : MonoBehaviour, IConstruct, IStop
 
     private void TryConstructTarget()
     {
-        // Èç¹ûÓĞÏÂ´ïÖ¸ÁîµÄÄ¿±ê ¼à²âÊÇ·ñÔÚ¹¥»÷¾àÀëÀïÃæ
+        // å¦‚æœæœ‰ä¸‹è¾¾æŒ‡ä»¤çš„ç›®æ ‡ ç›‘æµ‹æ˜¯å¦åœ¨æ”»å‡»è·ç¦»é‡Œé¢
         if (beConstruct.enabled)
         {
-            // ³¬³ö·¶Î§ÒÆ¶¯
+            // è¶…å‡ºèŒƒå›´ç§»åŠ¨
             if ((beConstruct.value.GetGameObject().transform.position - transform.position).magnitude > range)
             {
                 IMove move;
@@ -49,7 +49,7 @@ public class UsualConstruct : MonoBehaviour, IConstruct, IStop
 
     public void SetConstructTarget(IBeConstruct beConstruct)
     {
-        Debug.Log("UsualConstruct : SetConstructTarget ½ÓÊÜ½¨ÔìÖ¸Áî " + beConstruct.GetUnitInfo().Name);
+        Debug.Log("UsualConstruct : SetConstructTarget æ¥å—å»ºé€ æŒ‡ä»¤ " + beConstruct.GetUnitInfo().Name);
         this.beConstruct.value = beConstruct;
         this.beConstruct.enabled = true;
         beConstruct.AddConstructer(this);
@@ -60,9 +60,12 @@ public class UsualConstruct : MonoBehaviour, IConstruct, IStop
         return ConstructNameList;
     }
 
+    /// <summary>
+    /// å–æ¶ˆå»ºé€ åé¦ˆç»™ è™šå½±å»ºç­‘ä»è€Œæ§åˆ¶æ˜¾ä¸æ˜¾ç¤ºè™šå½±
+    /// </summary>
     private void CancelConstruct()
     {
-        // ±¨¸æÈ¡Ïû½¨Ôì
+        // æŠ¥å‘Šå–æ¶ˆå»ºé€ 
         if (beConstruct.enabled)
         {
             beConstruct.value.RemoveConstructer(this);
@@ -71,7 +74,7 @@ public class UsualConstruct : MonoBehaviour, IConstruct, IStop
 
     public void Stop()
     {
-        // ±¨¸æÈ¡Ïû»Øµ÷
+        // æŠ¥å‘Šå–æ¶ˆå›è°ƒ
         CancelConstruct();
         this.beConstruct.enabled = false;
     }
@@ -87,16 +90,16 @@ public class UsualConstruct : MonoBehaviour, IConstruct, IStop
     }
 
     /// <summary>
-    /// »ùÖ·½¨³É»Øµ÷
+    /// åŸºå€å»ºæˆå›è°ƒ
     /// </summary>
     /// <param name="unit"></param>
     public void BeConstructToFoundation(UnitController unit)
     {
         beConstruct.enabled = false;
         ISetTarget setTarget;
-        if (unit.TryGetComponent<ISetTarget>(out setTarget))
+        if (TryGetComponent<ISetTarget>(out setTarget))
         {
-            Debug.Log("UsualConstruct : BeConstructToFoundation Íê³ÉĞéÓ°Ä£ĞÍ ½ÓÊÜÄ£ĞÍÖ¸Áî: " + unit.name + " Î»ÖÃ: " + unit.transform.position);
+            Debug.Log("UsualConstruct : BeConstructToFoundation å®Œæˆè™šå½±æ¨¡å‹ æ¥å—æ¨¡å‹æŒ‡ä»¤: " + unit.name + " ä½ç½®: " + unit.transform.position);
             setTarget.SetTarget<UnitController>(unit);
         }
     }

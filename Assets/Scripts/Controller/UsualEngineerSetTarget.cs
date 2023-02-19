@@ -24,22 +24,18 @@ public class UsualEngineerSetTarget : UsualSetTarget
             this.target.value = unitController;
             this.target.enabled = true;
         }
+    }
 
-        //if (target is IBeConstruct)
-        //{
-        //    IBeConstruct beConstruct = target as IBeConstruct;
-        //    if (!beConstruct.GetGameObject().activeInHierarchy)
-        //    {
-        //        constructTarget.enabled = false;
-        //    }
-        //    constructTarget.value = beConstruct;
-        //    constructTarget.enabled = true;
-        //}
+    protected override void UpdateTarget()
+    {
+        if (target.value == null || !target.value.gameObject.activeInHierarchy || target.value.GetHP() >= target.value.GetMaxHp())
+        {
+            Stop();
+        }
     }
 
     public override void Stop()
     {
         base.Stop();
-        //constructTarget.enabled = false;
     }
 }

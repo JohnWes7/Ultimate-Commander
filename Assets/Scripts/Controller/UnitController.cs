@@ -24,7 +24,7 @@ public class UnitController : MonoBehaviour
         MonoBehaviour[] temps = GetComponents<MonoBehaviour>();
     }
 
-    public void Init(int team, string player, string unitName, Color teamcolor, int hp, int maxHP)
+    public void Init(int team, string player, string unitName, Color teamcolor, int hp, int maxHP, bool isConstruct = false)
     {
         Debug.Log("UnitController : Init 初始化数据\n" + team + "\n" + player + "\n" + unitName);
         this.team = team;
@@ -36,6 +36,13 @@ public class UnitController : MonoBehaviour
 
         // 更改颜色
         SetColor(teamColor, "colour");
+
+        if (isConstruct)
+        {
+
+        }
+
+
     }
 
     public void SetColor(Color color, string name)
@@ -51,12 +58,6 @@ public class UnitController : MonoBehaviour
                 temp.color = color;
             }
         }
-        //MeshRenderer[] mrs = gameObject.GetComponentsInChildren<MeshRenderer>();
-        //foreach (var mr in mrs)
-        //{
-        //    Material temp = mr.material;
-        //    temp.color = color;
-        //}
     }
 
     public void SetColor(Color color, Material material, string name)
@@ -118,6 +119,11 @@ public class UnitController : MonoBehaviour
     {
         this.hp = Mathf.Clamp(hp, 0, maxHP);
         this.hpBarController.Updatehp(hp, maxHP, this);
+    }
+
+    public int GetMaxHp()
+    {
+        return maxHP; 
     }
 
     private void OnDestroy()

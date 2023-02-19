@@ -12,9 +12,11 @@ public class UsualBeConstruct : MonoBehaviour, IBeConstruct
     [SerializeField] private int team;
     [SerializeField] private GameObject foundation;
 
-    public void Init(UnitInfo unitInfo)
+    public void Init(UnitInfo unitInfo, int team, string player)
     {
         this.unitInfo = unitInfo;
+        this.team = team;
+        this.player = player;
     }
 
     public void AddConstructer(IConstruct unitController)
@@ -32,7 +34,7 @@ public class UsualBeConstruct : MonoBehaviour, IBeConstruct
         foundation.Init(team, player, unitInfo.Name, GameRTSController.Instance.GetTeamColor(), 0, unitInfo.MaxHp);
 
         // 地基回调
-        foreach (var item in constructUnits)
+        foreach (IConstruct item in constructUnits)
         {
             item.BeConstructToFoundation(foundation);
         }

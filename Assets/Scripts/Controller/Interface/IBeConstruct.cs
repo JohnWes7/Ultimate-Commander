@@ -4,7 +4,7 @@ using UnityEngine;
 
 public interface IBeConstruct
 {
-    public void Init(UnitInfo unitInfo);
+    public void Init(UnitInfo unitInfo, int team, string player);
 
     public void BeConstruct();
 

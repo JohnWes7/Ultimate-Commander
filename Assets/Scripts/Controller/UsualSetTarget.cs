@@ -15,6 +15,7 @@ public class UsualSetTarget : MonoBehaviour, ISetTarget
 
     public OptionalValue<UnitController> GetTarget()
     {
+        //UpdateTarget();
         return target;
     }
 
@@ -60,11 +61,14 @@ public class UsualSetTarget : MonoBehaviour, ISetTarget
         target.enabled = false;
     }
 
+    /// <summary>
+    /// 用来检测然后 调用停止
+    /// </summary>
     protected virtual void UpdateTarget()
     {
         if (target.value == null || !target.value.gameObject.activeInHierarchy)
         {
-            target.enabled = false;
+            Stop();
         }
     }
 

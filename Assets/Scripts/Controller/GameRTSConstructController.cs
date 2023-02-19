@@ -57,7 +57,7 @@ public class GameRTSConstructController : MonoBehaviour
                     GameObject obj = Instantiate(baseConstructObject, raycastHit.point, Quaternion.identity);
                     GameObject model = Instantiate<GameObject>(curUnitInfo.ModelPrefab, obj.transform);
                     // 初始化建造基址
-                    obj.GetComponent<IBeConstruct>().Init(curUnitInfo);
+                    obj.GetComponent<IBeConstruct>().Init(curUnitInfo, GameRTSController.Instance.GetTeam(), GameRTSController.Instance.GetPlayer());
                     // 更改物体的材质和颜色变为虚影
                     SetMatForAllChildren(model, preSetMat, preSetMatColor);
 

@@ -3,6 +3,6 @@
         "model_prefab_path": "unit/model/factory",
         "prefab_path": "unit/prefabs/factory",
         "icon_path": "unit/icon/factory",
-        "max_hp" : 1000
+        "max_hp" : 3000
     }
 }

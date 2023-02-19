@@ -81,8 +81,8 @@ public class GameRTSController : MonoBehaviour
                 RaycastHit unitRaycasthit;
                 if (Physics.Raycast(ray, out unitRaycasthit, 1000, 1 << LayerMask.NameToLayer("Unit")))
                 {
-                    UnitController unitController;
-                    if (unitRaycasthit.transform.TryGetComponent<UnitController>(out unitController))
+                    UnitController target;
+                    if (unitRaycasthit.transform.TryGetComponent<UnitController>(out target))
                     {
                         //设置所有单位目标
                         foreach (var item in selectedUnits)
@@ -97,7 +97,8 @@ public class GameRTSController : MonoBehaviour
                             ISetTarget attack;
                             if (item.gameObject.TryGetComponent<ISetTarget>(out attack))
                             {
-                                attack.SetTarget<UnitController>(unitController);
+                                Debug.Log("GameRTSController : RightClick " + "给 " + item.name + " 下达指令 目标: " + target.name);
+                                attack.SetTarget<UnitController>(target);
                             }
                         }
                     }
@@ -396,5 +397,10 @@ public class GameRTSController : MonoBehaviour
     public Color GetTeamColor()
     {
         return teamColor;
+    }
+
+    public int GetTeam()
+    {
+        return team;
     }
 }
