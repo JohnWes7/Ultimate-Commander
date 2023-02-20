@@ -113,7 +113,7 @@ public class TurretRepire : MonoBehaviour
             }
         }
 
-        // 如果当前没有目标
+        // 如果当前没有目标 进行到这里也就是没有找到首要目标
         if (!attackTarget.enabled)
         {
             foreach (var item in allunits)
@@ -143,10 +143,20 @@ public class TurretRepire : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 超出射程或者死亡就取消攻击目标 attacktarget
+    /// </summary>
     private void ResetAttackTargetIfOutOfRangeAndDie()
     {
         if (attackTarget.enabled)
         {
+            // 如果当前目标是首要目标的话 如果首要目标关闭要跟着关闭
+            if (attackTarget.value == firstTarget.value && firstTarget.enabled == false)
+            {
+                attackTarget.enabled = false;
+            }
+
+
             // 如果超过射程就target失效
             if (attackTarget.value == null || (attackTarget.value.transform.position - transform.position).magnitude > turretRange)
             {
